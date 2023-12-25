@@ -1,0 +1,35 @@
+name: 🚀 Feature
+description: Suggest an idea for this project 💡
+title: 'Feature: '
+labels: [👀 needs triage, 💡 feature]
+body:
+  - type: dropdown
+    attributes:
+      multiple: false
+      label: Type of feature
+      description: Select the type of feature.
+      options:
+        - '🚀 Feature'
+        - '📝 Documentation'
+        - '🎨 Style'
+        - '🧑‍💻 Refactor'
+        - '🔥 Performance'
+        - '✅ Test'
+        - '🤖 Build'
+        - '🔁 CI'
+        - '📦 Chore'
+        - '⏩ Revert'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe your proposal.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Tasks
+      description: Break it down to smaller tasks. Using checkboxes would be nice.
+    validations:
+      required: true
