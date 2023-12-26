@@ -23,6 +23,8 @@ model Event {
   eventDates EventDate[]
   attendances Attendance[]
 
+  @@index([uuid])
+
   @@map("events") // table name
 }
 
@@ -50,6 +52,7 @@ model Attendance {
   eventId Int @map("event_id")
   eventDateId Int @map("event_date_id")
   participantName String @map("participant_name")
+  anonymousParticipantId String @map("anonymous_participant_id")
   status Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -57,6 +60,8 @@ model Attendance {
   // relations
   event Event @relation(fields: [eventId], references: [id])
   eventDate EventDate @relation(fields: [eventDateId], references: [id])
+
+  @@index([anonymousParticipantId])
 
   @@map("attendances")
 }
