@@ -22,19 +22,23 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
         description,
         eventDates: {
           create: eventDates.map(eventDate => ({
-            date: eventDate.date,
-            startAt: createDateTimeObject(
-              eventDate.date,
-              eventDate.startAt.hour,
-              eventDate.startAt.minutes,
-              eventDate.startAt.ampm,
-            ),
-            endAt: eventDate.endAt && createDateTimeObject(
-              eventDate.date,
-              eventDate.endAt.hour,
-              eventDate.endAt.minutes,
-              eventDate.endAt.ampm,
-            )
+            date: new Date(eventDate.year, eventDate.month - 1, eventDate.month),
+            startAt: createDateTimeObject({
+              year: eventDate.year,
+              month: eventDate.month,
+              day: eventDate.day,
+              hour: eventDate.startAt.hour,
+              minutes: eventDate.startAt.minutes,
+              ampm: eventDate.startAt.ampm,
+            }),
+            endAt: eventDate.endAt && createDateTimeObject({
+              year: eventDate.year,
+              month: eventDate.month,
+              day: eventDate.day,
+              hour: eventDate.endAt.hour,
+              minutes: eventDate.endAt.minutes,
+              ampm: eventDate.endAt.ampm,
+            })
           }))
         }
       },
@@ -43,6 +47,7 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
       },
     });
 
+    // timezone is UTC so convert it into local timezone in client component
     const res: Event = {
       id: event.id,
       uuid: event.uuid,
