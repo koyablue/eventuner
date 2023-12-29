@@ -15,7 +15,7 @@ export type ApiValidationErrorResponse<T> = {
   validationErrors: T
 }
 
-export type ApiHandlerResponse<TResponseData, TValidationErrors> =
+export type ApiHandlerResponse<TResponseData, TValidationErrors = undefined> =
   | NextResponse<ApiSuccessResponse<TResponseData>>
   | NextResponse<ApiErrorResponse>
   | NextResponse<ApiValidationErrorResponse<TValidationErrors>>;
