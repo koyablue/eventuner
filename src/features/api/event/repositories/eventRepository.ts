@@ -3,6 +3,26 @@ import { v4 as uuidv4 } from "uuid";
 import { CreateEventDto } from "../types";
 import { createDateTimeObject } from "../services";
 import { Event } from "@/types/models/event";
+import { prismaEventToEventModel } from "./utils";
+
+/**
+ *
+ *
+ * @param {string} uuid
+ * @return {Promise<Event>}
+ */
+export const getEventByUuid = async (uuid: string): Promise<Event> => {
+  try {
+    const event = await prisma.event.findFirstOrThrow({
+      where: { uuid },
+      include: { eventDates: true, attendances: true }
+    });
+
+    return prismaEventToEventModel(event);
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Create new event
@@ -48,27 +68,7 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
     });
 
     // timezone is UTC so convert it into local timezone in client component
-    const res: Event = {
-      id: event.id,
-      uuid: event.uuid,
-      token: event.token,
-      name: event.name,
-      description: event.description,
-      eventDates: event.eventDates.map(eventDate => ({
-        id: eventDate.id,
-        eventId: eventDate.eventId,
-        date: eventDate.date,
-        startAt: eventDate.startAt,
-        endAt: eventDate.endAt,
-        createdAt: eventDate.createdAt,
-        updatedAt: eventDate.updatedAt,
-      })),
-      attendances: [],
-      createdAt: event.createdAt,
-      updatedAt: event.updatedAt,
-    };
-
-    return res;
+    return prismaEventToEventModel(event);
   } catch (error) {
     throw error;
   }
