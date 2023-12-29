@@ -10,7 +10,9 @@ export type CreateEventDto = {
   name: string
   description?: string | null
   eventDates: {
-    date: Date
+    year: number
+    month: number
+    day: number
     startAt: EventDateTime
     endAt: EventDateTime | null
   }[]
