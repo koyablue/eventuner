@@ -40,7 +40,7 @@ model EventDate {
 
 
   // relations
-  event Event @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   attendances Attendance[]
 
   @@map("event_dates")
@@ -58,8 +58,8 @@ model Attendance {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relations
-  event Event @relation(fields: [eventId], references: [id])
-  eventDate EventDate @relation(fields: [eventDateId], references: [id])
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventDate EventDate @relation(fields: [eventDateId], references: [id], onDelete: Cascade)
 
   @@index([anonymousParticipantId])
 
