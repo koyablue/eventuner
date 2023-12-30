@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export type ApiSuccessResponse<T> = {
+export type ApiSuccessResponse<T = null> = {
   message: string
   data: T
 };

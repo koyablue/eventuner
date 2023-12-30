@@ -7,7 +7,7 @@ import { Event } from "@/types/models/event";
 import { prismaEventToEventModel } from "./utils";
 
 /**
- *
+ * Get by id
  *
  * @param {number} id
  * @return {Promise<Event>}
@@ -26,7 +26,7 @@ export const getEventById = async (id: number): Promise<Event> => {
 };
 
 /**
- *
+ * Get by UUID
  *
  * @param {string} uuid
  * @return {Promise<Event>}
@@ -95,7 +95,7 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
 };
 
 /**
- *
+ * Update event
  *
  * @param {Event} event
  * @param {UpdateEventDto} values
@@ -149,6 +149,20 @@ export const updateEvent = async (event: Event, values: UpdateEventDto): Promise
     });
 
     return prismaEventToEventModel(updatedEvent);
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete event
+ *
+ * @param {number} id
+ * @return {Promise<void>}
+ */
+export const deleteEvent = async (id: number) => {
+  try {
+    await prisma.event.delete({ where: { id } });
   } catch (error) {
     throw error;
   }

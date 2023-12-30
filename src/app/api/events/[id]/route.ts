@@ -4,9 +4,10 @@ import { dbConnect, dbDisconnect } from "@/libs/prisma";
 import { updateEventUseCase } from "@/features/api/event/useCases/updateEventUseCase";
 import { ApiHandlerResponse } from "@/types/api";
 import { Event } from "@/types/models/event";
+import { deleteEventUseCase } from "@/features/api/event/useCases/deleteEventUseCase";
 
 /**
- * Update event
+ *
  *
  * @param {NextRequest} req
  * @param {{ params: { id: string } }} { params }
@@ -41,6 +42,33 @@ export const PATCH = async (
     return NextResponse.json({ message: "Success", data: { event: updatedEvent }}, { status: 200 });
   } catch (error) {
     console.error(error);
+    return NextResponse.json({ message: "Error", error }, { status: 500 });
+  } finally {
+    await dbDisconnect();
+  }
+};
+
+/**
+ *
+ *
+ * @param {NextRequest} _req
+ * @param {{ params: { id: string } }} { params }
+ * @param {NextResponse} _res
+ * @return {Promise<ApiHandlerResponse<null, undefined>>}
+ */
+export const DELETE = async (
+  _req: NextRequest,
+  { params }: { params: { id: string } },
+  _res: NextResponse
+): Promise<ApiHandlerResponse<null, undefined>> => {
+  const eventId  = Number(params.id);
+
+  try {
+    await dbConnect();
+    await deleteEventUseCase(eventId);
+
+    return NextResponse.json({ message: "Success", data: null }, { status: 204 });
+  } catch (error) {
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   } finally {
     await dbDisconnect();
