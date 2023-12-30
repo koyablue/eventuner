@@ -1,8 +1,8 @@
+import { NextRequest, NextResponse } from "next/server";
 import { getEventByUuidUseCase } from "@/features/api/event/useCases/getEventByUuidUseCase";
 import { dbConnect, dbDisconnect } from "@/libs/prisma";
 import { ApiHandlerResponse } from "@/types/api";
 import { Event } from "@/types/models/event";
-import { NextRequest, NextResponse } from "next/server";
 
 /**
  * Get event by uuid
