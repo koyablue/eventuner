@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validateDate } from "@/features/api/event/validation/validators/event";
+import { validateDate } from "@/features/api/event/validation/validators";
 
 export const AmPmSchema = z.union([
   z.literal("am"),

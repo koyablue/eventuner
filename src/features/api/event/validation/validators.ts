@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { NewEventSchema } from "../schemas/event";
+import { NewEventSchema } from "@/features/api/event/validation/schemas";
 
 export const validateDate = (year: number, month: number, day: number): boolean => {
   const date = new Date(year, month - 1, day);
@@ -18,7 +18,7 @@ export const validateNewEventReq = (reqBody: any): z.SafeParseReturnType<any, Va
 
 
 export type NewEventValidationErrors = {
-  name?: string[] | undefined;
-  description?: string[] | undefined;
-  eventDates?: string[] | undefined;
+  name?: string[];
+  description?: string[];
+  eventDates?: string[];
 }
