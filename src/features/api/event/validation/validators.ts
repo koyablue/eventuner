@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { NewEventSchema } from "@/features/api/event/validation/schemas";
+import { NewEventSchema, UpdateEventSchema } from "@/features/api/event/validation/schemas";
 
 export const validateDate = (year: number, month: number, day: number): boolean => {
   const date = new Date(year, month - 1, day);
   return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 };
 
-export type ValidateNewEventReturnType = z.infer<typeof NewEventSchema>
+export type ValidateNewEventReturnType = z.infer<typeof NewEventSchema>;
 
 /**
  * Validation for creating new event
@@ -22,3 +22,20 @@ export type NewEventValidationErrors = {
   description?: string[];
   eventDates?: string[];
 }
+
+export type ValidateUpdateEventReturnType = z.infer<typeof UpdateEventSchema>;
+
+/**
+ * Validation for updating event
+ *
+ * @param {*} reqBody
+ * @return {z.SafeParseReturnType<any, ValidateUpdateEventReturnType>}
+ */
+export const validateUpdateEventReq = (reqBody: any): z.SafeParseReturnType<any, ValidateUpdateEventReturnType> => UpdateEventSchema.safeParse(reqBody);
+
+export type UpdateEventValidationErrors = {
+  name?: string[]
+  description?: string[]
+  keepDateIds?: string[]
+  addedDates?: string[]
+};

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { number, z } from "zod";
 import { validateDate } from "@/features/api/event/validation/validators";
 
 export const AmPmSchema = z.union([
@@ -22,8 +22,23 @@ export const EventDateSchema = z.object({
   message: "The date is invalid"
 });
 
+const EventNameSchema = z.string().min(1).max(100);
+
+const EventDescriptionSchema = z.string().nullable().optional();
+
+const EventDatesSchema = z.array(EventDateSchema);
+
+// Validation schema for creating new event
 export const NewEventSchema = z.object({
-  name: z.string().min(1).max(100),
-  description: z.string().nullable(),
-  eventDates: z.array(EventDateSchema).nonempty()
+  name: EventNameSchema,
+  description: EventDescriptionSchema,
+  eventDates: EventDatesSchema.nonempty(),
+});
+
+// Validation schema for updating event
+export const UpdateEventSchema = z.object({
+  name: EventNameSchema,
+  description: EventDescriptionSchema,
+  keepDateIds: z.array(z.number()),
+  addedDates: EventDatesSchema.optional(),
 });
