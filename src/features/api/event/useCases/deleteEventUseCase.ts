@@ -1,4 +1,5 @@
 import { deleteEvent } from "@/features/api/event/repositories/eventRepository";
+import { InternalServerError } from "@/errors/internalServerError";
 
 /**
  *

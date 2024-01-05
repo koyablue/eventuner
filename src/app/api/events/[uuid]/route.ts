@@ -3,6 +3,7 @@ import { getEventByUuidUseCase } from "@/features/api/event/useCases/getEventByU
 import { dbConnect, dbDisconnect } from "@/libs/prisma";
 import { ApiHandlerResponse } from "@/types/api";
 import { Event } from "@/types/models/event";
+import { ModelNotFoundError } from "@/errors/modelNotFoundError";
 
 /**
  * Get event by uuid

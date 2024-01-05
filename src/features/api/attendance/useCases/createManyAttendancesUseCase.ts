@@ -3,6 +3,7 @@ import { CreateAttendancesDto } from "@/features/api/attendance/types";
 import { getEventByUuid } from "@/features/api/event/repositories/eventRepository";
 import { createManyAttendances } from "@/features/api/attendance/repositories/attendanceRepository";
 import { Attendance } from "@/types/models/event";
+import { InternalServerError } from "@/errors/internalServerError";
 
 /**
  * Create multiple attendance records

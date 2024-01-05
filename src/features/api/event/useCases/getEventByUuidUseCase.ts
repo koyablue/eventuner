@@ -1,5 +1,6 @@
 import { Event } from "@/types/models/event";
 import { getEventByUuid } from "../repositories/eventRepository";
+import { ModelNotFoundError } from "@/errors/modelNotFoundError";
 
 /**
  *

@@ -1,6 +1,7 @@
 import { Event } from "@/types/models/event";
 import { createEvent } from "../repositories/eventRepository";
 import { CreateEventDto } from "../types";
+import { InternalServerError } from "@/errors/internalServerError";
 
 /**
  *

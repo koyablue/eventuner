@@ -1,6 +1,7 @@
 import { getEventById, updateEvent } from "@/features/api/event/repositories/eventRepository";
 import { UpdateEventDto } from "../types";
 import { Event } from "@/types/models/event";
+import { InternalServerError } from "@/errors/internalServerError";
 
 /**
  *
