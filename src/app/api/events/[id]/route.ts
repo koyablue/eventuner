@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UpdateEventValidationErrors, validateUpdateEventReq } from "@/features/api/event/validation/validators";
-import { dbConnect, dbDisconnect } from "@/libs/prisma";
+import { dbConnect, dbDisconnect } from "@/lib/prisma";
 import { updateEventUseCase } from "@/features/api/event/useCases/updateEventUseCase";
 import { ApiHandlerResponse } from "@/types/api";
 import { Event } from "@/types/models/event";

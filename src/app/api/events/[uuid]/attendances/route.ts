@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect, dbDisconnect } from "@/libs/prisma";
+import { dbConnect, dbDisconnect } from "@/lib/prisma";
 import { validateNewAttendances, AttendancesValidationErrors } from "@/features/api/attendance/validation/validators";
 import { createManyAttendancesUseCase } from "@/features/api/attendance/useCases/createManyAttendancesUseCase";
 import { ApiHandlerResponse } from "@/types/api";

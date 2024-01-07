@@ -1,4 +1,4 @@
-import { prisma } from "@/libs/prisma";
+import { prisma } from "@/lib/prisma";
 import { Attendance as PrismaAttendance } from "@prisma/client";
 import { Event } from "@/types/models/event";
 import { CreateAttendancesDto } from "../types";
