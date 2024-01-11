@@ -5,7 +5,11 @@ import { Label } from '@/components/ui/label';
 import { TimeSelect } from './timeSelect';
 import { Icons } from '@/components/icnos';
 import { AmPmString } from '@/types/event';
-import { addHoursToDate } from '@/utils';
+import { addHoursToDate, extract12HourFormat } from '@/utils';
+
+// TODO: props
+// date, timeRanges[]
+// TimeRanges { defaultHours, defaultMinutes, defaultAmPm }
 
 type Props = {
   date: Date
@@ -31,28 +35,17 @@ export const ProposedSchedule = ({ date }: Props) => {
     // TODO: remove element
   };
 
-  const getTimeSelectValues = (date: Date): { hours: number, minutes: number, ampm: AmPmString } => {
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12 || 12;
-
-    return { hours, minutes, ampm };
-  };
-
   const {
     hours: currentTimeHours,
     minutes: currentTimeMinutes,
     ampm: currentAmPm,
-  } = getTimeSelectValues(new Date());
+  } = extract12HourFormat(new Date());
 
   const {
     hours: toTimeHours,
     minutes: toTimeMinutes,
     ampm: toAmPm,
-  } = getTimeSelectValues(addHoursToDate(new Date(), 1));
-
-  // d.toDateString().split(' ')[1]
+  } = extract12HourFormat(addHoursToDate(new Date(), 1));
 
   return (
     <div className='px-4'>
@@ -62,6 +55,8 @@ export const ProposedSchedule = ({ date }: Props) => {
           <Icons.plusCircle size={16} />
         </button>
       </Label>
+
+      {/* TODO: loop this element */}
       <div className='w-full flex items-center gap-1 mb-3'>
         <div className='flex items-center gap-2'>
           <TimeSelect

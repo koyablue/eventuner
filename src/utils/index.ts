@@ -1,3 +1,5 @@
+import { AmPmString } from '@/types/event';
+
 /**
  * Add hours to date object
  *
@@ -10,3 +12,18 @@ export const addHoursToDate = (date: Date, hours: number): Date => {
   date.setTime(date.getTime() + milliSecondsToAdd);
   return date;
 }
+
+/**
+ *
+ *
+ * @param {Date} date
+ * @return {{ hours: number, minutes: number, ampm: AmPmString }}
+ */
+export const extract12HourFormat = (date: Date): { hours: number, minutes: number, ampm: AmPmString } => {
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12 || 12;
+
+  return { hours, minutes, ampm };
+};

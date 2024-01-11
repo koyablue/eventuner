@@ -1,7 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { z } from 'zod';
-import { useState } from 'react';
 
 // shadcn
 import { Input } from '@/components/ui/input';
@@ -9,20 +9,24 @@ import { Textarea } from '@/components/ui/textarea'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label';
-import { TimeSelect } from '@/features/event/components/timeSelect';
 import { buttonVariants } from '@/components/ui/button';
 
 // components
-import { Icons } from '@/components/icnos'
 import { ProposedSchedule } from '@/features/event/components/proposedSchedule';
 
 import { cn } from '@/lib/utils';
 import { useDetectScrollToBottom } from '@/hooks/useDetectScrollToBottom';
 import { NewEventSchema } from '@/features/api/event/validation/schemas';
+import { addHoursToDate, extract12HourFormat } from '@/utils';
+
+// stores
+import { useScheduleStore } from '@/stores/scheduleStore';
 
 type EventFormData = z.infer<typeof NewEventSchema>;
 
 export default function Home() {
+  const { scheduleDates, addDate, addTimeRangeToDate } = useScheduleStore();
+
   const initialDays: Date[] = [new Date()];
   const [days, setDays] = useState<Date[] | undefined>(initialDays);
 
@@ -31,6 +35,20 @@ export default function Home() {
     : (<p className='text-sm'>Please pick one or more days.</p>);
 
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
+
+  // TODO: declare onSelect function (add dates, addTimeRange)
+
+  useEffect(() => {
+    const today = new Date();
+    const todayIsoString = today.toISOString();
+    addDate({
+      date: todayIsoString,
+      timeRanges: [{
+        start: extract12HourFormat(today),
+        end: extract12HourFormat(addHoursToDate(today, 1)),
+      }]
+    });
+  }, []);
 
   return (
     <main className='flex justify-center min-h-screen bg-slate-100 md:p-24'>
