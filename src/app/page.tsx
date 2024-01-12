@@ -60,8 +60,19 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = ''; // To show a confirmation dialogue
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     // Add proposed schedule initially (because today is initially selected in the calendar)
     addDate({ date: new Date(), timeRanges: [createCurrentTimeRange()] });
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   return (
