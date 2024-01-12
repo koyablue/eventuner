@@ -1,6 +1,6 @@
 'use client';
 
-import { TimeSelect } from '../timeSelect';
+import { TimeSelect } from '../TimeSelect';
 import { Icons } from '@/components/icnos';
 import { ProposedScheduleLabel } from './ProposedScheduleLabel';
 import { addHoursToDate, extract12HourFormat, toYMDStr } from '@/utils';

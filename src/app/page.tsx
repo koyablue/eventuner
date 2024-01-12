@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { buttonVariants } from '@/components/ui/button';
 
 // components
-import { ProposedSchedule } from '@/features/event/components/ProposedSchedule/ProposedSchedule';
+import { ProposedSchedule, CalendarFooter } from '@/features/event';
 
 import { cn } from '@/lib/utils';
 import { useDetectScrollToBottom } from '@/hooks/useDetectScrollToBottom';
@@ -20,33 +20,48 @@ import { NewEventSchema } from '@/features/api/event/validation/schemas';
 import { addHoursToDate, extract12HourFormat, parseYMDStr } from '@/utils';
 
 // stores
-import { useScheduleStore } from '@/stores/scheduleStore';
+import { useScheduleStore, type TimeRange } from '@/stores/scheduleStore';
 
 type EventFormData = z.infer<typeof NewEventSchema>;
 
 export default function Home() {
-  const { scheduleDates, addDate, addTimeRangeToDate } = useScheduleStore();
+  const { scheduleDates, addDate } = useScheduleStore();
 
+  // Initially selected today in the calendar
   const initialDays: Date[] = [new Date()];
+  // State for selected days in the calendar
   const [days, setDays] = useState<Date[] | undefined>(initialDays);
 
-  const calendarFooter = days && days.length > 0
-    ? (<p className='text-sm'>You selected {days.length} day{days.length > 1 && 's'}.</p>)
-    : (<p className='text-sm'>Please pick one or more days.</p>);
-
+  // Indicates whether the proposed schedule section has been scrolled to the bottom
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
 
-  // TODO: declare onSelect function (add dates, addTimeRange)
+  /**
+   * Create time range object of current time ~ current time + 1hour
+   *
+   * @return {Omit<TimeRange, 'id'>}
+   */
+  const createCurrentTimeRange = (): Omit<TimeRange, 'id'>  => {
+    const current = new Date();
+    return {
+      start: extract12HourFormat(current),
+      end: extract12HourFormat(addHoursToDate(current, 1)),
+    };
+  };
+
+  /**
+   * Update selectedDates and proposedSchedule
+   *
+   * @param {(Date[] | undefined)} days
+   * @param {Date} selectedDay
+   */
+  const onCalendarDateSelectHandler = (days: Date[] | undefined, selectedDay: Date) => {
+    setDays(days);
+    addDate({ date: selectedDay, timeRanges: [createCurrentTimeRange()] })
+  };
 
   useEffect(() => {
-    const today = new Date();
-    addDate({
-      date: today,
-      timeRanges: [{
-        start: extract12HourFormat(today),
-        end: extract12HourFormat(addHoursToDate(today, 1)),
-      }]
-    });
+    // Add proposed schedule initially (because today is initially selected in the calendar)
+    addDate({ date: new Date(), timeRanges: [createCurrentTimeRange()] });
   }, []);
 
   return (
@@ -55,6 +70,7 @@ export default function Home() {
         <form className='h-full'>
 
           <div className='h-full w-full flex flex-col lg:flex-row'>
+            {/* title and description */}
             <div className='w-full flex flex-row lg:border-r grow lg:flex-col lg:h-full lg:w-3/12'>
               <div className='w-full flex flex-col gap-8 pt-16 md:px-4'>
                 <div>
@@ -75,6 +91,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Calendar */}
             <div className='pt-16 flex flex-col justify-center md:px-8 lg:w-5/12 lg:px-0 lg:pl-4 xl:px-4'>
               <Label htmlFor='event_date_picker' className='mb-2'>Select date(s)</Label>
               <Calendar
@@ -82,8 +99,8 @@ export default function Home() {
                 className="rounded-md w-full flex-1"
                 mode='multiple'
                 selected={days}
-                onSelect={setDays}
-                footer={calendarFooter}
+                onSelect={onCalendarDateSelectHandler}
+                footer={<CalendarFooter daysCount={days?.length || 0} />}
                 disabled={{ before: new Date() }}
                 modifiersClassNames={{
                   selected: 'bg-emerald-500 text-white hover:bg-emerald-500 hover:text-white',
@@ -95,9 +112,11 @@ export default function Home() {
                     "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-foreground"
                   )
                 }}
+                fromYear={new Date().getFullYear()}
               />
             </div>
 
+            {/* Days and time ranges */}
             <div className='grow w-full flex flex-col justify-between lg:w-3/12'>
               <div className='h-[80%] px-2.5 pt-10 overflow-hidden lg:pt-24'>
                 <div className='h-full flex flex-col items-center overflow-auto lg:block lg:h-(calc(100%-96px))'>
@@ -122,7 +141,7 @@ export default function Home() {
                 !isBottom && <div className='hidden w-full relative h-[150px] -mt-44 bg-gradient-to-t from-white to-transparent lg:-mt-48 lg:block'></div>
               }
               <div className='flex justify-end pb-6 md:pr-4'>
-                <Button className='bg-emerald-500 text-white hover:bg-emerald-600'>
+                <Button type='submit' className='bg-emerald-500 text-white hover:bg-emerald-600'>
                   Create an event
                 </Button>
               </div>
