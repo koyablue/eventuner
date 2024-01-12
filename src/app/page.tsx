@@ -12,12 +12,12 @@ import { Label } from '@/components/ui/label';
 import { buttonVariants } from '@/components/ui/button';
 
 // components
-import { ProposedSchedule } from '@/features/event/components/proposedSchedule';
+import { ProposedSchedule } from '@/features/event/components/ProposedSchedule/ProposedSchedule';
 
 import { cn } from '@/lib/utils';
 import { useDetectScrollToBottom } from '@/hooks/useDetectScrollToBottom';
 import { NewEventSchema } from '@/features/api/event/validation/schemas';
-import { addHoursToDate, extract12HourFormat } from '@/utils';
+import { addHoursToDate, extract12HourFormat, parseYMDStr } from '@/utils';
 
 // stores
 import { useScheduleStore } from '@/stores/scheduleStore';
@@ -31,7 +31,7 @@ export default function Home() {
   const [days, setDays] = useState<Date[] | undefined>(initialDays);
 
   const calendarFooter = days && days.length > 0
-    ? (<p className='text-sm'>You selected {days.length} day(s).</p>)
+    ? (<p className='text-sm'>You selected {days.length} day{days.length > 1 && 's'}.</p>)
     : (<p className='text-sm'>Please pick one or more days.</p>);
 
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
@@ -40,9 +40,8 @@ export default function Home() {
 
   useEffect(() => {
     const today = new Date();
-    const todayIsoString = today.toISOString();
     addDate({
-      date: todayIsoString,
+      date: today,
       timeRanges: [{
         start: extract12HourFormat(today),
         end: extract12HourFormat(addHoursToDate(today, 1)),
@@ -100,15 +99,23 @@ export default function Home() {
             </div>
 
             <div className='grow w-full flex flex-col justify-between lg:w-3/12'>
-              <div className='h-[80%] px-2.5 pt-10 overflow-auto lg:pt-24'>
-                <div className='h-full flex flex-col items-center lg:block'>
-                  <ProposedSchedule date={new Date()} />
-                  <ProposedSchedule date={new Date()} />
-                  <ProposedSchedule date={new Date()} />
-                  {/* last element */}
-                  <div ref={bottomRef}>
-                    <ProposedSchedule date={new Date()} />
-                  </div>
+              <div className='h-[80%] px-2.5 pt-10 overflow-hidden lg:pt-24'>
+                <div className='h-full flex flex-col items-center overflow-auto lg:block lg:h-(calc(100%-96px))'>
+                  {scheduleDates.map((sd, i, list) =>
+                    i === list.length - 1
+                      ? <div key={sd.date} ref={bottomRef}>
+                          <ProposedSchedule
+                            key={sd.date}
+                            date={parseYMDStr(sd.date)}
+                            timeRanges={sd.timeRanges}
+                          />
+                        </div>
+                      : <ProposedSchedule
+                          key={sd.date}
+                          date={parseYMDStr(sd.date)}
+                          timeRanges={sd.timeRanges}
+                        />
+                  )}
                 </div>
               </div>
               {

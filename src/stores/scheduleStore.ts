@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+import { v4 as uuidv4 } from 'uuid';
 import { AmPmString } from '@/types/event';
+import { toYMDStr } from '@/utils';
 
 type Time = {
   hours?: number
@@ -7,13 +9,14 @@ type Time = {
   ampm?: AmPmString
 };
 
-type TimeRange = {
+export type TimeRange = {
+  id: string; // for key prop in JSX
   start: Time
   end?: Time
 };
 
 type ScheduleDate = {
-  date: string;
+  date: string; // ISO string
   timeRanges: TimeRange[];
 };
 
@@ -22,28 +25,33 @@ type ScheduleState = {
 };
 
 interface ScheduleStore extends ScheduleState {
-  addDate: (newDate: ScheduleDate) => void;
-  removeDate: (dateToRemove: string) => void;
-  addTimeRangeToDate: (date: string, newTimeRange: TimeRange) => void;
-  removeTimeRangeFromDate: (date: string, timeRangeToRemove: TimeRange) => void;
+  addDate: (newDate: { date: Date, timeRanges: Omit<TimeRange, 'id'>[] }) => void;
+  removeDate: (dateToRemove: Date) => void;
+  addTimeRangeToDate: (date: Date, newTimeRange: Omit<TimeRange, 'id'>) => void;
+  removeTimeRangeFromDate: (date: Date, timeRangeToRemove: TimeRange) => void;
 }
 
 export const useScheduleStore = create<ScheduleStore>(set => ({
   scheduleDates: [],
 
   addDate: (newDate) =>
-    set((state) => ({ scheduleDates: [...state.scheduleDates, newDate] })),
+    set((state) => {
+      const timeRanges: TimeRange[] = newDate.timeRanges.map(timeRange => ({ ...timeRange, id: uuidv4() }));
+      return {
+        scheduleDates: [...state.scheduleDates, { date: toYMDStr(newDate.date), timeRanges }]
+      };
+    }),
 
   removeDate: (dateToRemove) =>
     set((state) => ({
-      scheduleDates: state.scheduleDates.filter(date => date.date !== dateToRemove)
+      scheduleDates: state.scheduleDates.filter(date => date.date !== toYMDStr(dateToRemove))
     })),
 
   addTimeRangeToDate: (date, newTimeRange) =>
     set((state) => ({
       scheduleDates: state.scheduleDates.map(sd =>
-        sd.date === date
-          ? { ...sd, timeRanges: [...sd.timeRanges, newTimeRange] }
+        sd.date === toYMDStr(date)
+          ? { ...sd, timeRanges: [...sd.timeRanges, { ...newTimeRange, id: uuidv4() }] }
           : sd
       )
     })),
@@ -51,7 +59,7 @@ export const useScheduleStore = create<ScheduleStore>(set => ({
   removeTimeRangeFromDate: (date, timeRangeToRemove) =>
     set((state) => ({
       scheduleDates: state.scheduleDates.map(sd =>
-        sd.date === date
+        sd.date === toYMDStr(date)
           ? { ...sd, timeRanges: sd.timeRanges.filter(tr => tr !== timeRangeToRemove) }
           : sd
       )

@@ -27,3 +27,22 @@ export const extract12HourFormat = (date: Date): { hours: number, minutes: numbe
 
   return { hours, minutes, ampm };
 };
+
+/**
+ * Date to yyyy-mm-dd
+ *
+ * @param {Date} date
+ * @return {string}
+ */
+export const toYMDStr = (date: Date) => date.toISOString().split('T')[0];
+
+/**
+ * From yyyy-mm-dd to Date object
+ *
+ * @param {string} dateString
+ * @return {Date}
+ */
+export const parseYMDStr = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
