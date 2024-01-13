@@ -1,9 +1,10 @@
 'use client';
 
+import { add } from 'date-fns';
 import { TimeSelect } from '../TimeSelect';
 import { Icons } from '@/components/icnos';
 import { ProposedScheduleLabel } from './ProposedScheduleLabel';
-import { addHoursToDate, extract12HourFormat, toYMDStr } from '@/utils';
+import { extract12HourFormat } from '@/utils';
 import { useScheduleStore, type TimeRange } from '@/stores/scheduleStore';
 
 type Props = {
@@ -23,6 +24,7 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
     addTimeRangeToDate,
     removeTimeRangeFromDate,
     removeDate,
+    removeTimeRangeAndDateIfEmpty,
   } = useScheduleStore();
 
   const addTimeRange = () => {
@@ -32,27 +34,26 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
       date,
       {
         start: extract12HourFormat(current),
-        end: extract12HourFormat(addHoursToDate(current, 1)),
+        end: extract12HourFormat(add(current, { hours: 1 })),
       }
     )
   };
 
   const removeTimeRange = (timeRangeId: string) => {
+
+    // TODO: If there's only one date, do not remove date
+
     const timeRangeToRemove = timeRanges.find(tr => tr.id === timeRangeId);
     if (!timeRangeToRemove) return;
 
-    removeTimeRangeFromDate(date, timeRangeToRemove);
-
-    if (!scheduleDates.find(sd => sd.date === toYMDStr(date))?.timeRanges.length) {
-      removeDate(date);
-    }
+    removeTimeRangeAndDateIfEmpty(date, timeRangeToRemove);
   };
 
   const {
     hours: defaultEndTimeHours,
     minutes: defaultEndTimeMinutes,
     ampm: defaultEndTimeAmPm,
-  } = extract12HourFormat(addHoursToDate(date, 1));
+  } = extract12HourFormat(add(date, { hours: 1 }));
 
   return (
     <div className='px-4 mb-6'>
