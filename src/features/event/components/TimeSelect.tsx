@@ -31,12 +31,12 @@ export const TimeSelect = ({
 
   return (
     <div className='flex items-center gap-2'>
-      <div className='p-1 bg-white rounded-sm lg:rounded-md border xl:p-2'>
+      <div className='p-2 bg-white rounded-sm lg:rounded-md border'>
         <div className='flex'>
           <select
             name='hours'
             defaultValue={defaultHours || '--'}
-            className='bg-transparent text-xs appearance-none outline-none hover:cursor-pointer lg:text-sm'
+            className='bg-transparent text-sm appearance-none outline-none hover:cursor-pointer'
           >
             <option>--</option>
             {hourValues.map(hour =>
@@ -49,7 +49,7 @@ export const TimeSelect = ({
           <select
             name='minutes'
             defaultValue={defaultMinutes || '--'}
-            className='bg-transparent text-xs appearance-none outline-none mr-2 hover:cursor-pointer lg:text-sm'
+            className='bg-transparent text-sm appearance-none outline-none mr-2 hover:cursor-pointer'
           >
             <option>--</option>
             {minValues.map(min =>
@@ -60,7 +60,7 @@ export const TimeSelect = ({
           <select
             name='ampm'
             defaultValue={defaultAmPm || 'am'}
-            className='bg-transparent text-xs appearance-none outline-none hover:cursor-pointer lg:text-sm'
+            className='bg-transparent text-sm appearance-none outline-none hover:cursor-pointer'
           >
             <option value='am'>am</option>
             <option value='pm'>pm</option>
