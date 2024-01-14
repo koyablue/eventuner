@@ -40,9 +40,6 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
   };
 
   const removeTimeRange = (timeRangeId: string) => {
-
-    // TODO: If there's only one date, do not remove date
-
     const timeRangeToRemove = timeRanges.find(tr => tr.id === timeRangeId);
     if (!timeRangeToRemove) return;
 
