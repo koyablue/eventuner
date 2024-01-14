@@ -2,22 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
+import { DayModifiers } from 'react-day-picker';
+import { add, isSameDay, parseISO } from 'date-fns';
 
 // shadcn
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea'
-import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label';
 import { buttonVariants } from '@/components/ui/button';
 
 // components
-import { ProposedSchedule, CalendarFooter } from '@/features/event';
+import { ProposedSchedule, Calendar } from '@/features/event';
+import { NewEventSchema } from '@/features/api/event/validation/schemas';
 
 import { cn } from '@/lib/utils';
 import { useDetectScrollToBottom } from '@/hooks/useDetectScrollToBottom';
-import { NewEventSchema } from '@/features/api/event/validation/schemas';
-import { addHoursToDate, extract12HourFormat, parseYMDStr } from '@/utils';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
+import { extract12HourFormat } from '@/utils';
 
 // stores
 import { useScheduleStore, type TimeRange } from '@/stores/scheduleStore';
@@ -25,12 +27,9 @@ import { useScheduleStore, type TimeRange } from '@/stores/scheduleStore';
 type EventFormData = z.infer<typeof NewEventSchema>;
 
 export default function Home() {
-  const { scheduleDates, addDate } = useScheduleStore();
+  useBeforeUnload();
 
-  // Initially selected today in the calendar
-  const initialDays: Date[] = [new Date()];
-  // State for selected days in the calendar
-  const [days, setDays] = useState<Date[] | undefined>(initialDays);
+  const { scheduleDates, addDate, removeDate } = useScheduleStore();
 
   // Indicates whether the proposed schedule section has been scrolled to the bottom
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
@@ -44,36 +43,21 @@ export default function Home() {
     const current = new Date();
     return {
       start: extract12HourFormat(current),
-      end: extract12HourFormat(addHoursToDate(current, 1)),
+      end: extract12HourFormat(add(current, { hours: 1 })),
     };
   };
 
   /**
-   * Update selectedDates and proposedSchedule
+   * Action for when a date on Calendar is clicked
    *
-   * @param {(Date[] | undefined)} days
-   * @param {Date} selectedDay
+   * @param {Date} clickedDate
+   * @param {DayModifiers} { selected: wasSelected }
    */
-  const onCalendarDateSelectHandler = (days: Date[] | undefined, selectedDay: Date) => {
-    setDays(days);
-    addDate({ date: selectedDay, timeRanges: [createCurrentTimeRange()] })
+  const onCalendarDateUnselected = (clickedDate: Date, { selected: wasSelected }: DayModifiers) => {
+    wasSelected
+      ? removeDate(clickedDate)
+      : addDate({ date: clickedDate, timeRanges: [createCurrentTimeRange()] });
   };
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = ''; // To show a confirmation dialogue
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Add proposed schedule initially (because today is initially selected in the calendar)
-    addDate({ date: new Date(), timeRanges: [createCurrentTimeRange()] });
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
 
   return (
     <main className='flex justify-center min-h-screen bg-slate-100 md:p-24'>
@@ -108,14 +92,9 @@ export default function Home() {
               <Calendar
                 id='event_date_picker'
                 className="rounded-md w-full flex-1"
-                mode='multiple'
-                selected={days}
-                onSelect={onCalendarDateSelectHandler}
-                footer={<CalendarFooter daysCount={days?.length || 0} />}
                 disabled={{ before: new Date() }}
                 modifiersClassNames={{
                   selected: 'bg-emerald-500 text-white hover:bg-emerald-500 hover:text-white',
-                  // today: 'bg-emerald-200'
                 }}
                 classNames={{
                   day: cn(
@@ -124,25 +103,31 @@ export default function Home() {
                   )
                 }}
                 fromYear={new Date().getFullYear()}
+                onDayClick={onCalendarDateUnselected}
               />
             </div>
 
             {/* Days and time ranges */}
             <div className='grow w-full flex flex-col justify-between lg:w-3/12'>
-              <div className='h-[80%] px-2.5 pt-10 overflow-hidden lg:pt-24'>
+              <div className='h-[80%] pt-10 overflow-hidden lg:pt-24 xl:px-2.5'>
                 <div className='h-full flex flex-col items-center overflow-auto lg:block lg:h-(calc(100%-96px))'>
+                  {!scheduleDates.length && (
+                    <div className='h-full pt-32'>
+                      <p className='text-center text-muted-foreground'>No dates has been selected.</p>
+                    </div>
+                  )}
                   {scheduleDates.map((sd, i, list) =>
                     i === list.length - 1
                       ? <div key={sd.date} ref={bottomRef}>
                           <ProposedSchedule
                             key={sd.date}
-                            date={parseYMDStr(sd.date)}
+                            date={parseISO(sd.date)}
                             timeRanges={sd.timeRanges}
                           />
                         </div>
                       : <ProposedSchedule
                           key={sd.date}
-                          date={parseYMDStr(sd.date)}
+                          date={parseISO(sd.date)}
                           timeRanges={sd.timeRanges}
                         />
                   )}
