@@ -22,12 +22,4 @@ export const extract12HourFormat = (date: Date): { hours: number, minutes: numbe
  * @param {Date} date
  * @return {string}
  */
-export const toYMDStr = (date: Date): string => format(date, 'Y-MM-dd');
-
-/**
- * From yyyy-mm-dd to Date object
- *
- * @param {string} dateString
- * @return {Date}
- */
-export const parseYMDStr = (dateString: string): Date => parseISO(dateString);
+export const toYMDStr = (date: Date): string => format(date, 'y-MM-dd');
