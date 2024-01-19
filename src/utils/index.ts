@@ -5,15 +5,15 @@ import { AmPmString } from '@/types/event';
  *
  *
  * @param {Date} date
- * @return {{ hours: number, minutes: number, ampm: AmPmString }}
+ * @return {{ hour: number, minutes: number, ampm: AmPmString }}
  */
-export const extract12HourFormat = (date: Date): { hours: number, minutes: number, ampm: AmPmString } => {
-  let hours = date.getHours();
+export const extract12HourFormat = (date: Date): { hour: number, minutes: number, ampm: AmPmString } => {
+  let hour = date.getHours();
   const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? 'pm' : 'am';
-  hours = hours % 12 || 12;
+  const ampm = hour >= 12 ? 'pm' : 'am';
+  hour = hour % 12 || 12;
 
-  return { hours, minutes, ampm };
+  return { hour, minutes, ampm };
 };
 
 /**
