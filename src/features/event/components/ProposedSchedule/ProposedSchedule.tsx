@@ -27,14 +27,16 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
     removeTimeRangeAndDateIfEmpty,
   } = useScheduleStore();
 
+  console.log(timeRanges);
+
   const addTimeRange = () => {
     const current = new Date();
 
     addTimeRangeToDate(
       date,
       {
-        start: extract12HourFormat(current),
-        end: extract12HourFormat(add(current, { hours: 1 })),
+        startAt: extract12HourFormat(current),
+        endAt: extract12HourFormat(add(current, { hours: 1 })),
       }
     )
   };
@@ -47,7 +49,7 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
   };
 
   const {
-    hours: defaultEndTimeHours,
+    hour: defaultEndTimeHours,
     minutes: defaultEndTimeMinutes,
     ampm: defaultEndTimeAmPm,
   } = extract12HourFormat(add(date, { hours: 1 }));
@@ -64,15 +66,15 @@ export const ProposedSchedule = ({ date, timeRanges }: Props) => {
         <div key={timeRange.id} className='w-full flex items-center gap-1 mb-3'>
           <div className='flex items-center gap-2'>
             <TimeSelect
-              defaultHours={timeRange.start.hours}
-              defaultMinutes={timeRange.start.minutes}
-              defaultAmPm={timeRange.start.ampm}
+              defaultHours={timeRange.startAt.hour}
+              defaultMinutes={timeRange.startAt.minutes}
+              defaultAmPm={timeRange.startAt.ampm}
             />
             -
             <TimeSelect
-              defaultHours={timeRange.end?.hours || defaultEndTimeHours}
-              defaultMinutes={timeRange.end?.minutes || defaultEndTimeMinutes}
-              defaultAmPm={timeRange.end?.ampm || defaultEndTimeAmPm}
+              defaultHours={timeRange.endAt?.hour || defaultEndTimeHours}
+              defaultMinutes={timeRange.endAt?.minutes || defaultEndTimeMinutes}
+              defaultAmPm={timeRange.endAt?.ampm || defaultEndTimeAmPm}
             />
           </div>
           <button onClick={() => removeTimeRange(timeRange.id)} className='flex-shrink-0'>
