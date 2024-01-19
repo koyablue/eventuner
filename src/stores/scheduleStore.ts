@@ -5,18 +5,18 @@ import { AmPmString } from '@/types/event';
 import { toYMDStr } from '@/utils';
 
 type Time = {
-  hours?: number
+  hour?: number
   minutes?: number
   ampm?: AmPmString
 };
 
 export type TimeRange = {
   id: string; // for key prop in JSX
-  start: Time
-  end?: Time
+  startAt: Time
+  endAt?: Time
 };
 
-type ScheduleDate = {
+export type ScheduleDate = {
   date: string; // yyyy-mm-dd string
   timeRanges: TimeRange[];
 };
