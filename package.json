@@ -17,7 +17,7 @@
     "date-fns": "^3.2.0",
     "lucide-react": "^0.307.0",
     "next": "14.0.4",
-    "path-kanri": "^0.2.1",
+    "path-kanri": "^0.2.2",
     "react": "^18",
     "react-day-picker": "^8.10.0",
     "react-dom": "^18",
