@@ -9,6 +9,7 @@ import { NewEventFormValidationError } from "../validation/validators";
       formErrors: NewEventFormValidationError | undefined;
       setFormErrors: Dispatch<SetStateAction<NewEventFormValidationError | undefined>>;
       getFirstError: (key: keyof NewEventFormValidationError) => string | undefined;
+      extractEventDatesErrors: (extractCount: number) => string[];
     }
  */
 export const useEventFormError = () => {
@@ -49,5 +50,23 @@ export const useEventFormError = () => {
     }
   }, [formErrors, hasErrors]);
 
-  return { formErrors, setFormErrors, hasErrors, getFirstError, resetErrors }
+  /**
+   * Extract eventDates errors from 0 to extractCount
+   *
+   * @param {number} extractCount
+   * @return {string[]}
+   */
+  const extractEventDatesErrors = (extractCount: number): string[] => {
+    if (!formErrors?.eventDates?.length) return [];
+    return formErrors.eventDates.splice(0, extractCount);
+  };
+
+  return {
+    formErrors,
+    setFormErrors,
+    hasErrors,
+    getFirstError,
+    resetErrors,
+    extractEventDatesErrors,
+  }
 };
