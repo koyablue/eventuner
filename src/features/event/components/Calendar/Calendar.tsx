@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { parseISO } from 'date-fns';
-import { useScheduleStore } from '@/stores/scheduleStore';
+import { useEventDateStore } from '@/stores/eventDateStore';
 import { Calendar as CalendarUi, type CalendarProps } from '@/components/ui/calendar';
 import { CalendarFooter } from './CalendarFooter';
 
@@ -12,15 +12,15 @@ type CalendarPropsType = Omit<
 >
 
 export const Calendar = (props: CalendarPropsType) => {
-  const { scheduleDates } = useScheduleStore();
+  const { eventDates } = useEventDateStore();
   // State for selected days in the calendar
   const [calendarSelectedDays, setCalendarSelectedDays] = useState<Date[] | undefined>();
 
   useEffect(() => {
     // Update calendar selection status based on the store
-    const updatedSelectedDays = scheduleDates.map(scheduleDate => parseISO(scheduleDate.date));
+    const updatedSelectedDays = eventDates.map(eventDate => parseISO(eventDate.date));
     setCalendarSelectedDays(updatedSelectedDays);
-  }, [scheduleDates]);
+  }, [eventDates]);
 
   return (
     <CalendarUi
