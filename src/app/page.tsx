@@ -13,9 +13,13 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label";
 import { buttonVariants } from "@/components/ui/button";
 
-// components
-import { ProposedSchedule, Calendar } from "@/features/event";
-import { NewEventSchema } from "@/features/api/event/validation/schemas";
+import {
+  ProposedSchedule,
+  Calendar,
+  FormError,
+  createEvent,
+  useEventFormError,
+} from "@/features/event";
 
 import { cn } from "@/lib/utils";
 import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
@@ -23,30 +27,42 @@ import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import { extract12HourFormat } from "@/utils";
 
 // stores
-import { useScheduleStore, type TimeRange } from "@/stores/scheduleStore";
-
-import { createEvent } from "@/features/event/actions/createEventAction";
+import { useEventDateStore, type TimeRange } from "@/stores/eventDateStore";
+import { getApiEndpoint, getApiEndpointFull } from "@/routes/api";
 
 export default function Home() {
   useBeforeUnload();
 
-  const { scheduleDates, addDate, removeDate } = useScheduleStore();
+  const { eventDates, addDate, removeDate } = useEventDateStore();
 
   // Indicates whether the proposed schedule section has been scrolled to the bottom
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
 
-  const [] = useState();
-  const initialState = {errors:{}, message: "", scheduleDates};
-  const customCreateEvent = createEvent.bind(null, scheduleDates)
-  // const [state, dispatch] = useFormState(createEvent, initialState);
+  const { formErrors, setFormErrors, getFirstError, hasErrors, resetErrors } = useEventFormError();
+
+  const customCreateEvent = createEvent.bind(null, eventDates)
+
+  const extractScheduleErrors = (timeRangeCount: number) => {
+    if (!formErrors?.eventDates?.length) return [];
+    return formErrors.eventDates.splice(0, timeRangeCount);
+  };
 
   const callCreateEventAction = async (formData: FormData) => {
     const res = await customCreateEvent(formData);
-    if (res?.errors) {
+
+    const errors = res?.errors;
+    if (errors) {
       // TODO: set state
+
+      if (!eventDates.length) {
+        errors.eventDates = ["Please select dates"]
+      }
+      setFormErrors(errors);
     }
 
     console.log(res)
+
+    // TODO: clear inputs, global store, local states(errors) and switch to submit complete component
   }
 
   /**
@@ -68,7 +84,9 @@ export default function Home() {
    * @param {Date} clickedDate
    * @param {DayModifiers} { selected: wasSelected }
    */
-  const onCalendarDateUnselected = (clickedDate: Date, { selected: wasSelected }: DayModifiers) => {
+  const onCalendarDateClicked = (clickedDate: Date, { selected: wasSelected }: DayModifiers) => {
+    resetErrors("eventDates");
+
     wasSelected
       ? removeDate(clickedDate)
       : addDate({ date: clickedDate, timeRanges: [createCurrentTimeRange()] });
@@ -85,19 +103,26 @@ export default function Home() {
                 <div>
                   <Label htmlFor="event_title_input">Event name</Label>
                   <Input
-                    name="eventName"
+                    name="name"
                     id="event_title_input"
                     placeholder="Name your event"
-                    className="focus-visible:ring-emerald-500 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:border-none" />
+                    // className={`${hasErrors("name") && 'border-orange-600'} focus-visible:ring-emerald-500 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:border-none`}
+                    // className="focus-visible:ring-emerald-500 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:border-none"
+                    className={`${hasErrors("name") && 'border-orange-600'} focus-visible:border-emerald-500 focus-visible:ring-0 focus-visible:ring-offset-0`}
+                    onChange={() => resetErrors("name")}
+                  />
+                  <FormError message={getFirstError("name")} />
                 </div>
                 <div>
                   <Label htmlFor="event_description_text_area">Event description(optional)</Label>
                   <Textarea
-                    name="eventDescription"
+                    name="description"
                     id="event_description_text_area"
                     placeholder="Write a summary and any details your invitee should know about the event."
-                    className="resize-none w-full h-40 lg:h-56 focus-visible:ring-emerald-500 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:border-none"
+                    className="resize-none w-full h-40 lg:h-56 focus-visible:border-emerald-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    onChange={() => resetErrors("description")}
                   />
+                  <FormError message={getFirstError("description")} />
                 </div>
               </div>
             </div>
@@ -119,7 +144,7 @@ export default function Home() {
                   )
                 }}
                 fromYear={new Date().getFullYear()}
-                onDayClick={onCalendarDateUnselected}
+                onDayClick={onCalendarDateClicked}
               />
             </div>
 
@@ -127,24 +152,29 @@ export default function Home() {
             <div className="grow w-full flex flex-col justify-between lg:w-3/12">
               <div className="h-[80%] pt-10 overflow-hidden lg:pt-24 xl:px-2.5">
                 <div className="h-full flex flex-col items-center overflow-auto lg:block lg:h-(calc(100%-96px))">
-                  {!scheduleDates.length && (
-                    <div className="h-full pt-32">
-                      <p className="text-center text-muted-foreground">No dates has been selected.</p>
+                  {!eventDates.length && (
+                    <div className="flex flex-col items-center h-full pt-32 pb-32 lg:pb-0">
+                      {formErrors?.eventDates?.length
+                        ? <FormError message={getFirstError("eventDates")} />
+                        : <p className="text-center text-muted-foreground">No dates has been selected.</p>
+                      }
                     </div>
                   )}
-                  {scheduleDates.map((sd, i, list) =>
+                  {eventDates.map((sd, i, list) =>
                     i === list.length - 1
                       ? <div key={sd.date} ref={bottomRef}>
                           <ProposedSchedule
                             key={sd.date}
                             date={parseISO(sd.date)}
                             timeRanges={sd.timeRanges}
+                            errors={extractScheduleErrors(sd.timeRanges.length)}
                           />
                         </div>
                       : <ProposedSchedule
                           key={sd.date}
                           date={parseISO(sd.date)}
                           timeRanges={sd.timeRanges}
+                          errors={extractScheduleErrors(sd.timeRanges.length)}
                         />
                   )}
                 </div>

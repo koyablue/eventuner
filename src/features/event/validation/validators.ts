@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { NewEventFormSchema } from "./schemas";
 
-type NewEventFormValidatedData = z.infer<typeof NewEventFormSchema>;
+export type NewEventFormValidatedData = z.infer<typeof NewEventFormSchema>;
 
-type NewEventFormValidationError = {
+export type NewEventFormValidationError = {
   name?: string[] | undefined
   description?: string[] | undefined
-  scheduleDates?: string[] | undefined
+  eventDates?: string[] | undefined
   server?: string
 };
 
@@ -24,9 +24,12 @@ export type ValidateNewEventFormReturnType = {
  * @return {ValidateNewEventFormReturnType}
  */
 export const validateNewEventFormReq = (reqBody: any, message =''): ValidateNewEventFormReturnType => {
+  console.log(JSON.stringify(reqBody, null, 2));
   const validatedFields = NewEventFormSchema.safeParse(reqBody);
+  console.log('validatedFields:', validatedFields);
 
   if (!validatedFields.success) {
+    console.log('validation error:',validatedFields.error.flatten())
     return {
       data: null,
       errors: validatedFields.error.flatten().fieldErrors,

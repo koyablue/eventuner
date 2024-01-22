@@ -121,14 +121,16 @@ export const updateEvent = async (event: Event, values: UpdateEventDto): Promise
             minutes: eventDate.startAt.minutes,
             ampm: eventDate.startAt.ampm,
           }),
-          endAt: eventDate.endAt && createDateTimeObject({
-            year: eventDate.year,
-            month: eventDate.month,
-            day: eventDate.day,
-            hour: eventDate.endAt.hour,
-            minutes: eventDate.endAt.minutes,
-            ampm: eventDate.endAt.ampm,
-          })
+          endAt: eventDate.endAt
+            ? createDateTimeObject({
+                year: eventDate.year,
+                month: eventDate.month,
+                day: eventDate.day,
+                hour: eventDate.endAt.hour,
+                minutes: eventDate.endAt.minutes,
+                ampm: eventDate.endAt.ampm,
+              })
+            : null,
         }));
 
         await prisma.eventDate.createMany({ data: eventDateToCreate });

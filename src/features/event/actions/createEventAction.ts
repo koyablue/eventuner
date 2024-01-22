@@ -1,16 +1,44 @@
-'use server';
-import { ScheduleDate } from "@/stores/scheduleStore";
-import { validateNewEventFormReq } from '../validation/validators';
-import { getApiEndpointFull } from '@/routes/api';
+"use server";
 
-export const createEvent = async (
-  scheduleDates: ScheduleDate[],
-  formData: FormData
-) => {
-  console.log(scheduleDates);
+import { EventDate } from "@/stores/eventDateStore";
+import { NewEventFormValidationError, validateNewEventFormReq } from "../validation/validators";
+import { createNewEventService } from "../services/createNewEventService";
+import type { AmPmString } from "@/types/event";
+import type { Event } from "@/types/models/event";
 
-  const formattedScheduleDates = scheduleDates.map(sd => {
-    const [year, month, day] = sd.date.split('-').map(Number);
+type CreateEventActionResponse<T> = {
+  data: T | null
+  errors?: NewEventFormValidationError | null
+  message?: string | null
+};
+
+type FormattedEventDate = {
+  year: number
+  month: number
+  day: number
+  timeRanges: {
+    startAt: {
+      hour?: number
+      minutes?: number
+      ampm?: AmPmString
+    };
+    endAt?: {
+      hour?: number
+      minutes?: number
+      ampm?: AmPmString
+    }
+  }[]
+}
+
+/**
+ *
+ *
+ * @param {EventDate[]} eventDates
+ * @return {FormattedEventDate}
+ */
+const formatEventDates = (eventDates: EventDate[]): FormattedEventDate[] => {
+  return eventDates.map(sd => {
+    const [year, month, day] = sd.date.split("-").map(Number);
 
     const timeRanges = sd.timeRanges.map(tr => {
       const startAt = {
@@ -25,41 +53,51 @@ export const createEvent = async (
             ampm: tr.endAt.ampm,
           }
         : undefined;
-      return { year, month, day, startAt, endAt }
+      return { startAt, endAt }
     });
 
     return { year, month, day, timeRanges };
   });
+};
 
+/**
+ * Server action for creating new event
+ *
+ * @param {EventDate[]} eventDates
+ * @param {FormData} formData
+ * @return {Promise<CreateEventActionResponse>}
+ */
+export const createEvent = async (
+  eventDates: EventDate[],
+  formData: FormData
+): Promise<CreateEventActionResponse<Event>> => {
+  // Format request values
+  const formattedEventDates = formatEventDates(eventDates);
+
+  // Validation
   const validationRes = validateNewEventFormReq({
-    name: formData.get('name'),
-    description: formData.get('description'),
-    scheduleDates: formattedScheduleDates,
-  }, 'Invalid or missing values');
+    name: formData.get("name"),
+    description: formData.get("description"),
+    eventDates: formattedEventDates,
+  }, "Invalid or missing values");
 
-  if (validationRes?.errors) {
+  if (validationRes?.errors || !validationRes.data) {
     return {
+      data: null,
       errors: validationRes.errors,
       message: validationRes.message,
     }
   }
 
+  // Call the API to store Event and EventDates
   try {
-    await fetch(
-      getApiEndpointFull('createEvent'),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validationRes.data),
-        cache: "no-store",
-      },
-    );
+    const res = await createNewEventService(validationRes.data);
+    return { data: res }
   } catch (error) {
     console.error(error);
     return {
-      errors: { server: 'Failed to create event' },
+      data: null,
+      errors: { server: "Failed to create event" },
       message: "Internal server error. Failed to create event",
     }
   }
