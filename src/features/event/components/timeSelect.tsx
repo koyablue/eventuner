@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { AmPmString } from '@/types/event';
+import { AmPmString } from "@/types/event";
 
 type Props = {
   defaultHours?: number
@@ -27,16 +27,16 @@ export const TimeSelect = ({
    * @param {number} num
    * @return {string}
    */
-  const toZeroPaddingStr = (num: number): string => num.toString().padStart(2, '0');
+  const toZeroPaddingStr = (num: number): string => num.toString().padStart(2, "0");
 
   return (
-    <div className='flex items-center gap-2'>
-      <div className='p-2 bg-white rounded-sm lg:rounded-md border'>
-        <div className='flex'>
+    <div className="flex items-center gap-2">
+      <div className="p-2 bg-white rounded-sm lg:rounded-md border">
+        <div className="flex">
           <select
-            name='hours'
-            defaultValue={defaultHours || '--'}
-            className='bg-transparent text-sm appearance-none outline-none hover:cursor-pointer'
+            name="hours"
+            defaultValue={defaultHours || "--"}
+            className="bg-transparent text-sm appearance-none outline-none hover:cursor-pointer"
           >
             <option>--</option>
             {hourValues.map(hour =>
@@ -44,12 +44,12 @@ export const TimeSelect = ({
             )}
           </select>
 
-          <span className='text-sm'>:</span>
+          <span className="text-sm">:</span>
 
           <select
-            name='minutes'
-            defaultValue={defaultMinutes || '--'}
-            className='bg-transparent text-sm appearance-none outline-none mr-2 hover:cursor-pointer'
+            name="minutes"
+            defaultValue={defaultMinutes || "--"}
+            className="bg-transparent text-sm appearance-none outline-none mr-2 hover:cursor-pointer"
           >
             <option>--</option>
             {minValues.map(min =>
@@ -58,12 +58,12 @@ export const TimeSelect = ({
           </select>
 
           <select
-            name='ampm'
-            defaultValue={defaultAmPm || 'am'}
-            className='bg-transparent text-sm appearance-none outline-none hover:cursor-pointer'
+            name="ampm"
+            defaultValue={defaultAmPm || "am"}
+            className="bg-transparent text-sm appearance-none outline-none hover:cursor-pointer"
           >
-            <option value='am'>am</option>
-            <option value='pm'>pm</option>
+            <option value="am">am</option>
+            <option value="pm">pm</option>
           </select>
         </div>
       </div>

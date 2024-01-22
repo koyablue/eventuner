@@ -5,7 +5,6 @@ const apiBaseUrl = getApiBaseUrl();
 
 const { getPath: getApiEndpoint, getFullPath: getApiEndpointFull } =
   pathManager({
-      // auth related
       createEvent: '/events',
     }, apiBaseUrl);
 
