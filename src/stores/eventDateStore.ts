@@ -31,6 +31,7 @@ interface EventDateStore extends EventDateState {
   addTimeRangeToDate: (date: Date, newTimeRange: Omit<TimeRange, 'id'>) => void;
   removeTimeRangeFromDate: (date: Date, timeRangeToRemove: TimeRange) => void;
   removeTimeRangeAndDateIfEmpty: (date: Date, timeRangeToRemove: TimeRange) => void;
+  resetDates: () => void;
 }
 
 export const useEventDateStore = create<EventDateStore>()(devtools(
@@ -82,4 +83,6 @@ export const useEventDateStore = create<EventDateStore>()(devtools(
 
         return { eventDates: finalEventDates };
       }),
+
+      resetDates: () => set(() => ({ eventDates: [] })),
 }), { name: 'scheduleStore' }));
