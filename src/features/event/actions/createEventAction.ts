@@ -67,7 +67,7 @@ const formatEventDates = (eventDates: EventDate[]): FormattedEventDate[] => {
  * @param {FormData} formData
  * @return {Promise<CreateEventActionResponse>}
  */
-export const createEvent = async (
+export const createEventAction = async (
   eventDates: EventDate[],
   formData: FormData
 ): Promise<CreateEventActionResponse<Event>> => {
