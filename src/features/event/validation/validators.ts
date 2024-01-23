@@ -4,9 +4,9 @@ import { NewEventFormSchema } from "./schemas";
 export type NewEventFormValidatedData = z.infer<typeof NewEventFormSchema>;
 
 export type NewEventFormValidationError = {
-  name?: string[] | undefined
-  description?: string[] | undefined
-  eventDates?: string[] | undefined
+  name?: string[]
+  description?: string[]
+  eventDates?: string[]
   server?: string
 };
 
