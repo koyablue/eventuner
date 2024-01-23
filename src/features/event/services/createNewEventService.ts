@@ -1,6 +1,6 @@
 import { Event } from "@/types/models/event";
 import { NewEventFormValidatedData } from "../validation/validators";
-import { getApiEndpointFull } from "@/routes/api";
+import { getApiEndpointFull } from "@/lib/routes/api";
 
 /**
  * Call create event API
@@ -27,6 +27,7 @@ export const createNewEventService = async (values: NewEventFormValidatedData): 
     }
 
     const resData = await res.json();
+
     return resData.data;
   } catch (error) {
     throw error;

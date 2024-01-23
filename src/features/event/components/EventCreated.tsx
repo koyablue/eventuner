@@ -1,14 +1,33 @@
 import { useState, useRef } from "react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/icnos";
-import Link from "next/link";
 
-export const EventCreated = () => {
+import { showToast } from "@/lib/react-toastify";
+import { getWebRoute, getWebRouteFull } from "@/lib/routes/web";
+
+type Props = {
+  uuid: string
+};
+
+/**
+ * URL share page
+ * Show this component after the new event is successfully created
+ *
+ * @param {Props} { uuid }
+ * @return {JSX.Element}
+ */
+export const EventCreated = ({ uuid }: Props) => {
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const shareUrlInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Copy event page URL to clip board
+   *
+   * @return {void}
+   */
   const handleCopy = async () => {
     if (!shareUrlInputRef.current) return;
 
@@ -21,21 +40,22 @@ export const EventCreated = () => {
       setTimeout(() => setIsCopied(false), 3000);
     } catch (error) {
       console.error(error);
-      // TODO: error handling
+      showToast("error", <p>Copy failed</p>, { autoClose: 2500 })
     }
   };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-8">
-      <div className="pb-4 sm:pt-16">
-        <h1 className="text-center text-xl font-semibold text-emerald-500 whitespace-nowrap sm:text-3xl">
+      <div className="flex flex-col items-center gap-4 sm:pb-4">
+        <Icons.calendarCheck className="w-7 h-7 text-emerald-500 sm:w-10 sm:h-10" />
+        <h1 className="text-center text-xl font-semibold whitespace-nowrap sm:text-3xl">
           Event Successfully Created!
         </h1>
       </div>
 
       <div className="flex flex-col text-sm text-muted-foreground sm:items-center sm:text-md lg:flex-row lg:text-lg">
         <p>The event page is ready to be shared!&nbsp;</p>
-        <p>You can start inviting people<br className="block sm:hidden" />by sharing the link below.</p>
+        <p>Start inviting people by sharing the link below.</p>
       </div>
 
       <div className="w-full sm:w-2/3">
@@ -43,7 +63,7 @@ export const EventCreated = () => {
           <div className="relative w-full">
             <Input
               readOnly
-              value="https://example.com/events/u/f1357807-b484-45af-a65d-357985b7cfa0"
+              value={`${getWebRouteFull("eventDetail", { uuid })}`}
               className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
               ref={shareUrlInputRef}
             />
@@ -59,7 +79,7 @@ export const EventCreated = () => {
       <Button
         className="bg-emerald-500 hover:bg-emerald-500/85 active:bg-emerald-500/85"
       >
-        <Link href="#" className="w-full h-full flex items-center justify-center">Visit event page</Link>
+        <Link href={getWebRoute("eventDetail", { uuid })} className="w-full h-full flex items-center justify-center">Visit event page</Link>
       </Button>
     </div>
   );

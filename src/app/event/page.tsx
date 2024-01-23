@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useFormState } from "react-dom";
-import { z } from "zod";
+import { useState, useRef } from "react";
 import { DayModifiers } from "react-day-picker";
-import { add, isSameDay, parseISO } from "date-fns";
+import { add, parseISO } from "date-fns";
 
 // shadcn
 import { Input } from "@/components/ui/input";
@@ -22,23 +20,31 @@ import {
   useEventFormError,
 } from "@/features/event";
 
-import { cn } from "@/lib/utils";
 import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
-import { extract12HourFormat } from "@/utils";
 
 // stores
 import { useEventDateStore, type TimeRange } from "@/stores/eventDateStore";
 
-export default function Home() {
+import { extract12HourFormat } from "@/utils";
+import { cn } from "@/lib/utils";
+import { showToast } from "@/lib/react-toastify";
+
+/**
+ * Event create page
+ *
+ * @return {JSX.Element}
+ */
+const NewEvent = () => {
   // Set beforeunload event handler
   useBeforeUnload();
 
-  // true temporarily to implement EventCreated page
-  // TODO: default: false
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(true);
-
   const { eventDates, addDate, removeDate, resetDates } = useEventDateStore();
+
+  // true temporarily to implement EventCreated page
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+  const [createdEventUuid, setCreatedEventUuid] = useState<string>("");
 
   // Indicates whether the proposed schedule section has been scrolled to the bottom
   const [isBottom, bottomRef] = useDetectScrollToBottom<HTMLDivElement>();
@@ -59,39 +65,34 @@ export default function Home() {
 
   const createEvent = createEventAction.bind(null, eventDates);
   const callCreateEventAction = async (formData: FormData) => {
-    const res = await createEvent(formData);
+    try {
+      const res = await createEvent(formData);
 
-    // Display errors if there are any errors
-    // if ('errors' in res) {
-    const errors = res?.errors;
-    if (errors) {
-      if (!eventDates.length) {
-        errors.eventDates = ["Please select dates"]
+      // Display errors if there are any errors
+      const errors = res?.errors;
+      if (errors) {
+        if (!eventDates.length) {
+          errors.eventDates = ["Please select dates"]
+        }
+        setFormErrors(errors);
+        return;
       }
-      setFormErrors(errors);
-      return;
-    }
-    // }
+      if (!res.data) throw new Error("Response data is undefined");
 
-    // TODO: try catch error handling
-
-    if (!res.data) {
-      throw new Error('');
+      setCreatedEventUuid(res.data.uuid);
+      // Clear form values
+      resetDates();
+      if (eventNameRef.current) {
+        eventNameRef.current.value = "";
+      }
+      if (eventDescriptionRef.current) {
+        eventDescriptionRef.current.value = "";
+      }
+      setIsSubmitted(true); // Display URL share component
+    } catch (error) {
+      console.error(error);
+      showToast("error", <p>Failed to create event</p>)
     }
-    console.log(res)
-    res.data.uuid
-
-    // Clear form values
-    resetDates();
-    if (eventNameRef.current) {
-      eventNameRef.current.value = "";
-    }
-    if (eventDescriptionRef.current) {
-      eventDescriptionRef.current.value = "";
-    }
-
-    // Display URL share component
-    setIsSubmitted(true);
   }
 
   /**
@@ -121,12 +122,15 @@ export default function Home() {
       : addDate({ date: clickedDate, timeRanges: [createCurrentTimeRange()] });
   };
 
+  // TODO: Loading view
+  // TODO: Separate form into another component
+
   return (
     <main className="flex justify-center min-h-screen bg-slate-100 md:p-24">
       <div className="w-full min-w-[320px] max-w-5xl min-h-[600px] bg-white px-8 rounded-md shadow-md lg:px-4 lg:h-[calc(100vh-96px-96px)]">
 
         {isSubmitted
-          ? <EventCreated />
+          ? <EventCreated uuid={createdEventUuid} />
           : (<form action={callCreateEventAction} className="h-full">
               <div className="h-full w-full flex flex-col lg:flex-row">
                 {/* title and description */}
@@ -228,3 +232,5 @@ export default function Home() {
     </main>
   )
 }
+
+export default NewEvent;

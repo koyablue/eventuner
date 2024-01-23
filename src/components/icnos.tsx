@@ -5,6 +5,7 @@ import {
   AlertCircle,
   Copy,
   Check,
+  CalendarCheck,
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -15,4 +16,5 @@ export const Icons = {
   alertCircle: AlertCircle,
   copy: Copy,
   check: Check,
+  calendarCheck: CalendarCheck,
 };
