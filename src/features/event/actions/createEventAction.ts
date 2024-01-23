@@ -7,8 +7,8 @@ import type { AmPmString } from "@/types/event";
 import type { Event } from "@/types/models/event";
 
 type CreateEventActionResponse<T> = {
-  data: T | null
-  errors?: NewEventFormValidationError | null
+  data: T | undefined
+  errors?: NewEventFormValidationError | undefined
   message?: string | null
 };
 
@@ -83,7 +83,7 @@ export const createEventAction = async (
 
   if (validationRes?.errors || !validationRes.data) {
     return {
-      data: null,
+      data: undefined,
       errors: validationRes.errors,
       message: validationRes.message,
     }
@@ -96,7 +96,7 @@ export const createEventAction = async (
   } catch (error) {
     console.error(error);
     return {
-      data: null,
+      data: undefined,
       errors: { server: "Failed to create event" },
       message: "Internal server error. Failed to create event",
     }
