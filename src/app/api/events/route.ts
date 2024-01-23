@@ -15,7 +15,7 @@ import { Event } from "@/types/models/event";
 export const POST = async (
   req: NextRequest,
   _: NextResponse,
-): Promise<ApiHandlerResponse<{event: Event}, NewEventValidationErrors>> => {
+): Promise<ApiHandlerResponse<Event, NewEventValidationErrors>> => {
   try {
     await dbConnect();
 
@@ -33,7 +33,7 @@ export const POST = async (
 
     const event = await createEventUseCase({ name, description, eventDates });
 
-    return NextResponse.json({ message: "Success", data: { event } }, { status: 201 });
+    return NextResponse.json({ message: "Success", data: { ...event } }, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });
