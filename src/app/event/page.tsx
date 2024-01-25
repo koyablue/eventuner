@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DayModifiers } from "react-day-picker";
 import { add, parseISO } from "date-fns";
 
@@ -40,6 +40,7 @@ const NewEvent = () => {
   useBeforeUnload();
 
   const { eventDates, addDate, removeDate, resetDates } = useEventDateStore();
+  const [calendarSelectedDays, setCalendarSelectedDays] = useState<Date[] | undefined>();
 
   // true temporarily to implement EventCreated page
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -122,6 +123,12 @@ const NewEvent = () => {
       : addDate({ date: clickedDate, timeRanges: [createCurrentTimeRange()] });
   };
 
+  useEffect(() => {
+    // Update calendar selection status based on the store
+    const updatedSelectedDays = eventDates.map(eventDate => parseISO(eventDate.date));
+    setCalendarSelectedDays(updatedSelectedDays);
+  }, [eventDates]);
+
   // TODO: Loading view
   // TODO: Separate form into another component
 
@@ -171,6 +178,7 @@ const NewEvent = () => {
                   <Calendar
                     id="event_date_picker"
                     className="rounded-md w-full flex-1"
+                    selectedDays={calendarSelectedDays}
                     disabled={{ before: new Date() }}
                     modifiersClassNames={{
                       selected: "bg-emerald-500 text-white hover:bg-emerald-500 hover:text-white",
