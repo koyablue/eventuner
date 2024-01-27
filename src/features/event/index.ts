@@ -5,7 +5,7 @@ export * from "./components/Calendar/CalendarFooter";
 export * from "./components/Calendar/Calendar";
 export * from "./components/FormError";
 export * from "./components/EventCreated";
-export * from "./components/EventForm";
+export * from "./components/EventForm/EventForm";
 export * from "./hooks/useEventFormError";
 export * from "./actions/createEventAction";
 export * from "./services/createNewEventService";
