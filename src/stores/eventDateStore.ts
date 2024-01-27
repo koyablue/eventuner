@@ -10,11 +10,27 @@ type Time = {
   ampm?: AmPmString
 };
 
-export type TimeRange = {
-  id: string; // for key prop in JSX
+export type ExistingTimeRange = {
+  id: number;
   startAt: Time
   endAt?: Time
 };
+function isExistingTimeRange(timeRange: TimeRange): timeRange is ExistingTimeRange {
+  return "id" in timeRange;
+}
+
+
+export type NewTimeRange = {
+  uuid: string;
+  startAt: Time;
+  endAt?: Time;
+};
+const isNewTimeRange = (timeRange: TimeRange): timeRange is NewTimeRange => {
+  return "uuid" in timeRange;
+};
+
+export type TimeRange = ExistingTimeRange | NewTimeRange;
+
 
 export type EventDate = {
   date: string; // yyyy-mm-dd string
@@ -26,9 +42,9 @@ type EventDateState = {
 };
 
 interface EventDateStore extends EventDateState {
-  addDate: (newDate: { date: Date, timeRanges: Omit<TimeRange, 'id'>[] }) => void;
+  addDate: (newDate: { date: Date, timeRanges: Omit<NewTimeRange, "uuid">[] }) => void;
   removeDate: (dateToRemove: Date) => void;
-  addTimeRangeToDate: (date: Date, newTimeRange: Omit<TimeRange, 'id'>) => void;
+  addTimeRangeToDate: (date: Date, newTimeRange: Omit<NewTimeRange, "uuid">) => void;
   removeTimeRangeFromDate: (date: Date, timeRangeToRemove: TimeRange) => void;
   removeTimeRangeAndDateIfEmpty: (date: Date, timeRangeToRemove: TimeRange) => void;
   resetDates: () => void;
@@ -40,7 +56,7 @@ export const useEventDateStore = create<EventDateStore>()(devtools(
 
     addDate: (newDate) =>
       set((state) => {
-        const timeRanges: TimeRange[] = newDate.timeRanges.map(timeRange => ({ ...timeRange, id: uuidv4() }));
+        const timeRanges: TimeRange[] = newDate.timeRanges.map(timeRange => ({ ...timeRange, uuid: uuidv4() }));
         return {
           eventDates: [...state.eventDates, { date: toYMDStr(newDate.date), timeRanges }]
         };
@@ -53,36 +69,45 @@ export const useEventDateStore = create<EventDateStore>()(devtools(
 
     addTimeRangeToDate: (date, newTimeRange) =>
       set((state) => ({
-        eventDates: state.eventDates.map(sd =>
-          sd.date === toYMDStr(date)
-            ? { ...sd, timeRanges: [...sd.timeRanges, { ...newTimeRange, id: uuidv4() }] }
-            : sd
+        eventDates: state.eventDates.map(eventDate =>
+          eventDate.date === toYMDStr(date)
+            ? { ...eventDate, timeRanges: [...eventDate.timeRanges, { ...newTimeRange, uuid: uuidv4() }] }
+            : eventDate
         )
       })),
 
     removeTimeRangeFromDate: (date, timeRangeToRemove) =>
       set((state) => ({
-        eventDates: state.eventDates.map(sd =>
-          sd.date === toYMDStr(date)
-            ? { ...sd, timeRanges: sd.timeRanges.filter(tr => tr !== timeRangeToRemove) }
-            : sd
+        eventDates: state.eventDates.map(eventDate =>
+          eventDate.date === toYMDStr(date)
+            ? { ...eventDate, timeRanges: eventDate.timeRanges.filter(tr => tr !== timeRangeToRemove) }
+            : eventDate
         )
       })),
 
-    removeTimeRangeAndDateIfEmpty: (date: Date, timeRangeToRemove: TimeRange) =>
-      set((state) => {
-        // remove timeRange
-        const updatedEventDates = state.eventDates.map(sd =>
-          sd.date === toYMDStr(date)
-            ? { ...sd, timeRanges: sd.timeRanges.filter(tr => tr.id !== timeRangeToRemove.id) }
-            : sd
-        );
+      removeTimeRangeAndDateIfEmpty: (date: Date, timeRangeToRemove: TimeRange) =>
+        set((state) => {
+          const updatedEventDates = state.eventDates.map(eventDate => {
+            if (eventDate.date === toYMDStr(date)) {
+              return {
+                ...eventDate,
+                timeRanges: eventDate.timeRanges.filter(tr => {
+                  if (isNewTimeRange(timeRangeToRemove)) {
+                    return (tr as NewTimeRange).uuid !== timeRangeToRemove.uuid;
+                  } else if (isExistingTimeRange(tr)) {
+                    return tr.id !== timeRangeToRemove.id;
+                  }
+                  // return false;
+                })
+              };
+            }
+            return eventDate;
+          });
 
-        // remove date that has empty timeRanges
-        const finalEventDates = updatedEventDates.filter(sd => !(sd.date === toYMDStr(date) && sd.timeRanges.length === 0));
+          const finalEventDates = updatedEventDates.filter(eventDate => !(eventDate.date === toYMDStr(date) && eventDate.timeRanges.length === 0));
 
-        return { eventDates: finalEventDates };
-      }),
+          return { eventDates: finalEventDates };
+        }),
 
       resetDates: () => set(() => ({ eventDates: [] })),
 }), { name: 'scheduleStore' }));
