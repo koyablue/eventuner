@@ -71,6 +71,8 @@ export const createEventAction = async (
   eventDates: EventDate[],
   formData: FormData
 ): Promise<CreateEventActionResponse<Event>> => {
+  console.log("EVENT_DATES_IN_ACTION:", eventDates);
+
   // Format request values
   const formattedEventDates = formatEventDates(eventDates);
 
