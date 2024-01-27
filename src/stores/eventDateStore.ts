@@ -19,7 +19,6 @@ function isExistingTimeRange(timeRange: TimeRange): timeRange is ExistingTimeRan
   return "id" in timeRange;
 }
 
-
 export type NewTimeRange = {
   uuid: string;
   startAt: Time;
@@ -45,6 +44,7 @@ interface EventDateStore extends EventDateState {
   addDate: (newDate: { date: Date, timeRanges: Omit<NewTimeRange, "uuid">[] }) => void;
   removeDate: (dateToRemove: Date) => void;
   addTimeRangeToDate: (date: Date, newTimeRange: Omit<NewTimeRange, "uuid">) => void;
+  updateTimeRange: (date: Date, timeRangeToUpdate: TimeRange) => void;
   removeTimeRangeFromDate: (date: Date, timeRangeToRemove: TimeRange) => void;
   removeTimeRangeAndDateIfEmpty: (date: Date, timeRangeToRemove: TimeRange) => void;
   resetDates: () => void;
@@ -75,6 +75,29 @@ export const useEventDateStore = create<EventDateStore>()(devtools(
             : eventDate
         )
       })),
+
+    updateTimeRange: (date, timeRangeToUpdate) =>
+      set((state) => {
+        return {
+          eventDates: state.eventDates.map(eventDate => {
+            if (eventDate.date === toYMDStr(date)) {
+              return {
+                ...eventDate,
+                timeRanges: eventDate.timeRanges.map(timeRange => {
+                  if (isNewTimeRange(timeRangeToUpdate) && isNewTimeRange(timeRange) && timeRange.uuid === timeRangeToUpdate.uuid) {
+                    return timeRangeToUpdate;
+                  }
+                  else if (isExistingTimeRange(timeRangeToUpdate) && isExistingTimeRange(timeRange) && timeRange.id === timeRangeToUpdate.id) {
+                    return timeRangeToUpdate;
+                  }
+                  return timeRange;
+                })
+              };
+            }
+            return eventDate;
+          })
+        };
+      }),
 
     removeTimeRangeFromDate: (date, timeRangeToRemove) =>
       set((state) => ({
