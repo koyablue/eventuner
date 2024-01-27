@@ -15,7 +15,7 @@ export type ExistingTimeRange = {
   startAt: Time
   endAt?: Time
 };
-function isExistingTimeRange(timeRange: TimeRange): timeRange is ExistingTimeRange {
+export const isExistingTimeRange = (timeRange: TimeRange): timeRange is ExistingTimeRange => {
   return "id" in timeRange;
 }
 
@@ -24,7 +24,7 @@ export type NewTimeRange = {
   startAt: Time;
   endAt?: Time;
 };
-const isNewTimeRange = (timeRange: TimeRange): timeRange is NewTimeRange => {
+export const isNewTimeRange = (timeRange: TimeRange): timeRange is NewTimeRange => {
   return "uuid" in timeRange;
 };
 
