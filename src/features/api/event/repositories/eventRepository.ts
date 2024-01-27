@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { EventDate as PrismaEventDate } from "@prisma/client";
-import { prisma } from "@/libs/prisma";
+import { prisma } from "@/lib/prisma";
 import { CreateEventDto, UpdateEventDto } from "../types";
 import { createDateTimeObject } from "../services";
 import { Event } from "@/types/models/event";
@@ -121,14 +121,16 @@ export const updateEvent = async (event: Event, values: UpdateEventDto): Promise
             minutes: eventDate.startAt.minutes,
             ampm: eventDate.startAt.ampm,
           }),
-          endAt: eventDate.endAt && createDateTimeObject({
-            year: eventDate.year,
-            month: eventDate.month,
-            day: eventDate.day,
-            hour: eventDate.endAt.hour,
-            minutes: eventDate.endAt.minutes,
-            ampm: eventDate.endAt.ampm,
-          })
+          endAt: eventDate.endAt
+            ? createDateTimeObject({
+                year: eventDate.year,
+                month: eventDate.month,
+                day: eventDate.day,
+                hour: eventDate.endAt.hour,
+                minutes: eventDate.endAt.minutes,
+                ampm: eventDate.endAt.ampm,
+              })
+            : null,
         }));
 
         await prisma.eventDate.createMany({ data: eventDateToCreate });
