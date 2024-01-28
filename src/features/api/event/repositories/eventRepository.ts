@@ -62,7 +62,7 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
         description,
         eventDates: {
           create: eventDates.map(eventDate => ({
-            date: new Date(eventDate.year, eventDate.month - 1, eventDate.month),
+            date: new Date(eventDate.year, eventDate.month - 1, eventDate.day),
             startAt: createDateTimeObject({
               year: eventDate.year,
               month: eventDate.month,
