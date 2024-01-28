@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { DayModifiers } from "react-day-picker";
 import { add, parseISO } from "date-fns";
 
@@ -70,7 +71,13 @@ const NewEvent = () => {
   };
 
   const createEvent = createEventAction.bind(null, eventDates);
-  const callCreateEventAction = async (formData: FormData) => {
+  /**
+   * Submit, validation, call API, state update
+   *
+   * @param {FormData} formData
+   * @return {void}
+   */
+  const callCreateEventAction = useDebouncedCallback(async (formData: FormData) => {
     try {
       const res = await createEvent(formData);
 
@@ -92,7 +99,7 @@ const NewEvent = () => {
       console.error(error);
       showToast("error", <p>Failed to create event</p>)
     }
-  }
+  }, 500);
 
   /**
    * Create time range object of current time ~ current time + 1hour
