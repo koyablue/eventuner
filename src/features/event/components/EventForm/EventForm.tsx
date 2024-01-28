@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import { parseISO } from "date-fns";
 import { DayClickEventHandler } from "react-day-picker";
@@ -6,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
-
+import { SubmitButton } from "./SubmitButton";
 import { Calendar } from "@/features/event/components/Calendar/Calendar";
 import { FormError } from "@/features/event/components/FormError";
 import { ProposedSchedule } from "@/features/event/components/ProposedSchedule/ProposedSchedule";
@@ -165,10 +167,7 @@ export const EventForm = ({
             !isBottom && <div className="hidden w-full relative h-[150px] -mt-44 bg-gradient-to-t from-white to-transparent lg:-mt-48 lg:block"></div>
           } */}
           <div className="flex justify-end pb-6 md:pr-4">
-            {/* TODO: Disable when no name and dates */}
-            <Button type="submit" className="bg-emerald-500 text-white hover:bg-emerald-600">
-              Create an event
-            </Button>
+            <SubmitButton />
           </div>
         </div>
       </div>
