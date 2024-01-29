@@ -34,12 +34,12 @@ const EventDetail = () => {
   ];
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen md:max-h-full md:overflow-auto">
       <header className="pt-16 pb-8">
         <h1 className="text-3xl font-semibold truncate">Random event name here</h1>
       </header>
-      <div>
-        <form>
+      <div className="overflow-auto">
+        <form className="h-full">
           <div className="py-8">
             <Label>Your name</Label>
             <Input className="focus-visible:border-emerald-500 focus-visible:ring-0 focus-visible:ring-offset-0" />
