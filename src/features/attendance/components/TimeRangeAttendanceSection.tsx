@@ -1,7 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { type AttendanceStatusType, attendanceStatus } from "@/constants/attendance";
-import { AttendeeBadge } from "@/features/attendance/component/AttendeeBadge";
+import { AttendeeBadge } from "@/features/attendance/components/AttendeeBadge";
 
 type Props = {
   timeRange: string

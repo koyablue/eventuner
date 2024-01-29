@@ -5,12 +5,10 @@ import { useDebouncedCallback } from "use-debounce";
 import { DayModifiers } from "react-day-picker";
 import { add, parseISO } from "date-fns";
 
-import {
-  EventCreated,
-  EventForm,
-  createEventAction,
-  useEventFormError,
-} from "@/features/event";
+import { EventCreated } from "@/features/event/components/EventCreated";
+import { EventForm } from "@/features/event/components/EventForm/EventForm";
+import { createEventAction } from "@/features/event/actions/createEventAction";
+import { useEventFormError } from "@/features/event/hooks/useEventFormError";
 
 import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";

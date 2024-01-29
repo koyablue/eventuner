@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { TimeRangeAttendanceSection } from "@/features/attendance/component/TimeRangeAttendanceSection";
+import { TimeRangeAttendanceSection } from "@/features/attendance/components/TimeRangeAttendanceSection";
 
 type Props = {
   date: string
