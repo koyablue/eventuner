@@ -10,14 +10,12 @@ import { EventForm } from "@/features/event/components/EventForm/EventForm";
 import { createEventAction } from "@/features/event/actions/createEventAction";
 import { useEventFormError } from "@/features/event/hooks/useEventFormError";
 
-import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
-import { useBeforeUnload } from "@/hooks/useBeforeUnload";
-
 // stores
 import { useEventDateStore, type TimeRange } from "@/stores/eventDateStore";
 
-import { extract12HourFormat } from "@/utils";
-import { cn } from "@/lib/utils";
+import { useDateUtil } from "@/hooks/useDateUtil";
+import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
+import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import { showToast } from "@/lib/react-toastify";
 
 /**
@@ -28,6 +26,8 @@ import { showToast } from "@/lib/react-toastify";
 const NewEvent = () => {
   // Set beforeunload event handler
   useBeforeUnload();
+
+  const { extract12HourFormat } = useDateUtil();
 
   const { eventDates, addDate, removeDate, resetDates } = useEventDateStore();
   const [calendarSelectedDays, setCalendarSelectedDays] = useState<Date[] | undefined>();
