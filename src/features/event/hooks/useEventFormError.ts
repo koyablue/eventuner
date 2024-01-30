@@ -56,10 +56,10 @@ export const useEventFormError = () => {
    * @param {number} extractCount
    * @return {string[]}
    */
-  const extractEventDatesErrors = (extractCount: number): string[] => {
+  const extractEventDatesErrors = useCallback((extractCount: number): string[] => {
     if (!formErrors?.eventDates?.length) return [];
     return formErrors.eventDates.splice(0, extractCount);
-  };
+  }, [formErrors?.eventDates]);
 
   return {
     formErrors,

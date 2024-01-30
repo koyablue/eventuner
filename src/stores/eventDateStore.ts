@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { v4 as uuidv4 } from 'uuid';
-import { AmPmString } from '@/types/event';
-import { toYMDStr } from '@/utils';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { v4 as uuidv4 } from "uuid";
+import { AmPmString } from "@/types/event";
+import { toYMDStr } from "@/utils";
 
 type Time = {
   hour?: number
@@ -133,4 +133,4 @@ export const useEventDateStore = create<EventDateStore>()(devtools(
         }),
 
       resetDates: () => set(() => ({ eventDates: [] })),
-}), { name: 'scheduleStore' }));
+}), { name: "scheduleStore" }));
