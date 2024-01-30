@@ -7,25 +7,25 @@ import { Attendance } from "@/types/models/event";
 /**
  * Create multiple attendance records
  *
- * @param {Omit<CreateAttendancesDto, "anonymousParticipantId">} values
+ * @param {Omit<CreateAttendancesDto, "anonymousAttendeeId">} values
  * @return {Promise<Attendance[]>}
  */
-export const createManyAttendancesUseCase = async (values: Omit<CreateAttendancesDto, "anonymousParticipantId">): Promise<Attendance[]> => {
+export const createManyAttendancesUseCase = async (values: Omit<CreateAttendancesDto, "anonymousAttendeeId">): Promise<Attendance[]> => {
   try {
     const event = await getEventByUuid(values.eventUuid);
     if (values.attendances.length !==  event.eventDates.length) {
       throw new Error("The number of Attendance does not match the number of EventDate");
     }
 
-    await createManyAttendances(event, { anonymousParticipantId: uuidv4(), ...values});
+    await createManyAttendances(event, { anonymousAttendeeId: uuidv4(), ...values});
     const createdAttendances = (await getEventByUuid(values.eventUuid)).attendances;
 
     return createdAttendances.map(attendance => ({
       id: attendance.id,
       eventId: attendance.eventId,
       eventDateId: attendance.eventDateId,
-      participantName: attendance.participantName,
-      anonymousParticipantId: attendance.anonymousParticipantId,
+      attendeeName: attendance.attendeeName,
+      anonymousAttendeeId: attendance.anonymousAttendeeId,
       status: attendance.status,
       createdAt: attendance.createdAt,
       updatedAt: attendance.updatedAt,

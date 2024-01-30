@@ -4,8 +4,8 @@ export type Attendance = {
   id: number
   eventId: number
   eventDateId: number
-  participantName: string
-  anonymousParticipantId: string
+  attendeeName: string
+  anonymousAttendeeId: string
   status: AttendanceStatus
   createdAt: Date
   updatedAt: Date
@@ -19,6 +19,7 @@ export type EventDate = {
   endAt?: Date | null
   createdAt: Date
   updatedAt: Date
+  attendances?: Attendance[]
 };
 
 export type Event = {

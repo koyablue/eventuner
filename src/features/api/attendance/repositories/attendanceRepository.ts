@@ -12,14 +12,14 @@ import { CreateAttendancesDto } from "../types";
  */
 export const createManyAttendances = async (event: Event, values: CreateAttendancesDto): Promise<number> => {
   const eventId = event.id;
-  const { participantName, anonymousParticipantId, attendances } = values;
+  const { attendeeName, anonymousAttendeeId, attendances } = values;
 
   try {
     const attendancesToCreate: Omit<PrismaAttendance, "id" | "createdAt" | "updatedAt">[] = attendances.map(attendance => ({
       eventId,
       eventDateId: attendance.eventDateId,
-      participantName,
-      anonymousParticipantId,
+      attendeeName,
+      anonymousAttendeeId,
       status: attendance.status
     }));
 

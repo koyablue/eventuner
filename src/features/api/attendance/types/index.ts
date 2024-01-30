@@ -7,7 +7,7 @@ type Attendances = {
 
 export type CreateAttendancesDto = {
   eventUuid: string
-  participantName: string
-  anonymousParticipantId: string
+  attendeeName: string
+  anonymousAttendeeId: string
   attendances: Attendances[]
 };

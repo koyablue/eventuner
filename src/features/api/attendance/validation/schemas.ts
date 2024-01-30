@@ -13,6 +13,6 @@ export const EventDateAndStatusMapSchema = z.object({
 });
 
 export const AttendancesSchema = z.object({
-  participantName: z.string().min(1).max(50),
+  attendeeName: z.string().min(1).max(50),
   attendances: z.array(EventDateAndStatusMapSchema).nonempty()
 });

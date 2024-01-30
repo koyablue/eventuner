@@ -51,8 +51,8 @@ model Attendance {
   id Int @id @default(autoincrement())
   eventId Int @map("event_id")
   eventDateId Int @map("event_date_id")
-  participantName String @map("participant_name")
-  anonymousParticipantId String @map("anonymous_participant_id")
+  attendeeName String @map("attendee_name")
+  anonymousAttendeeId String @map("anonymous_attendee_id")
   status Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -61,7 +61,7 @@ model Attendance {
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventDate EventDate @relation(fields: [eventDateId], references: [id], onDelete: Cascade)
 
-  @@index([anonymousParticipantId])
+  @@index([anonymousAttendeeId])
 
   @@map("attendances")
 }
