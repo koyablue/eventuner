@@ -21,7 +21,6 @@ model Event {
 
   // relations
   eventDates EventDate[]
-  attendances Attendance[]
 
   @@index([uuid])
 
@@ -39,7 +38,6 @@ model EventDate {
   // relations
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   timeRanges TimeRange[]
-  attendances Attendance[]
 
   @@map("event_dates")
 }
@@ -54,6 +52,7 @@ model TimeRange {
 
   // relations
   eventDate EventDate @relation(fields: [eventDateId], references: [id], onDelete: Cascade)
+  attendances Attendance[]
 
   @@map("time_ranges")
 }
@@ -61,8 +60,7 @@ model TimeRange {
 // Model for participatns' attendance
 model Attendance {
   id Int @id @default(autoincrement())
-  eventId Int @map("event_id")
-  eventDateId Int @map("event_date_id")
+  timeRangeId Int @map("time_range_id")
   attendeeName String @map("attendee_name")
   anonymousAttendeeId String @map("anonymous_attendee_id")
   status Int
@@ -70,8 +68,7 @@ model Attendance {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // relations
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventDate EventDate @relation(fields: [eventDateId], references: [id], onDelete: Cascade)
+  timeRange TimeRange @relation(fields: [timeRangeId], references: [id], onDelete: Cascade)
 
   @@index([anonymousAttendeeId])
 
