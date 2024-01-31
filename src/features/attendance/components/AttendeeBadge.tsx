@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Icons } from "@/components/icnos";
-import { type AttendanceStatusType, attendanceStatus } from "@/constants/attendance";
+import { attendanceStatus } from "@/constants/attendance";
+import { AttendanceStatus } from "@/types/models/event";
 
 type Props = {
-  status: AttendanceStatusType
+  status: AttendanceStatus
   label: string
 }
 
