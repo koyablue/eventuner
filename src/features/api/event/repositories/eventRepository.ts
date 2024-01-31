@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { CreateEventDto, UpdateEventDto } from "@/features/api/event/types";
 import { createDateTimeObj } from "@/features/api/event/services";
 import { Event } from "@/types/models/event";
-import { prismaEventToEventModel } from "./utils";
+import { convertEvent } from "@/features/api/event/repositories/utils";
 
 /**
  * Get by id
@@ -16,10 +16,17 @@ export const getEventById = async (id: number): Promise<Event> => {
   try {
     const event = await prisma.event.findFirstOrThrow({
       where: { id },
-      include: { eventDates: true, attendances: true }
+      include: {
+        eventDates: {
+          orderBy: { date: "asc" },
+          include: {
+            timeRanges: { include: { attendances: true } }
+          }
+        }
+      }
     });
 
-    return prismaEventToEventModel(event);
+    return convertEvent(event);
   } catch (error) {
     throw error;
   }
@@ -37,12 +44,18 @@ export const getEventByUuid = async (uuid: string): Promise<Event> => {
       where: { uuid },
       include: {
         eventDates: {
-          include: { attendances: true }
+          orderBy: { date: "asc" },
+          include: {
+            timeRanges: {
+              orderBy: { startAt: "asc" },
+              include: { attendances: true }
+            }
+          }
         }
       }
     });
 
-    return prismaEventToEventModel(event);
+    return convertEvent(event);
   } catch (error) {
     throw error;
   }
@@ -99,7 +112,7 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
     });
 
     // timezone is UTC so convert it into local timezone in client component
-    return prismaEventToEventModel(event);
+    return convertEvent(event);
   } catch (error) {
     throw error;
   }
@@ -155,13 +168,19 @@ export const updateEvent = async (event: Event, values: UpdateEventDto): Promise
       const updatedEvent = await prisma.event.update({
         where: { id: event.id },
         data: { name, description },
-        include: { eventDates: true, attendances: true }
+        include: {
+          eventDates: {
+            include: {
+              timeRanges: { include: { attendances: true } }
+            }
+          }
+        }
       });
 
       return updatedEvent
     });
 
-    return prismaEventToEventModel(updatedEvent);
+    return convertEvent(updatedEvent);
   } catch (error) {
     throw error;
   }
