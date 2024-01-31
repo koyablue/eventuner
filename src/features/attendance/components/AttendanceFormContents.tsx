@@ -1,5 +1,7 @@
 "use client";
 
+import { useFormStatus } from "react-dom";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -12,6 +14,10 @@ type Props = {
 }
 
 export const AttendanceFormContents = ({ event }: Props) => {
+  const { pending } = useFormStatus();
+
+  console.log("Attendance form pending:", pending);
+
   return (
     <>
       <div className="py-8">

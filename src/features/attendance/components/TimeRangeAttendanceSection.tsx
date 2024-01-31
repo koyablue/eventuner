@@ -29,7 +29,13 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
     let maybe = 0;
     let declined = 0;
 
-    const detailStr = () => `${yes} yes, ${maybe} maybe, ${declined} declined`;
+    const detailStr = () => {
+      if (yes === 0 && maybe === 0 && declined === 0) {
+        return "No one has answered yet.";
+      }
+      return `${yes} yes, ${maybe} maybe, ${declined} declined`
+    };
+
     if (!attendances.length) return detailStr();
 
     for (let i = 0; i < attendances.length; i++) {
@@ -79,13 +85,17 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
       </div>
 
       <div className="w-full flex flex-wrap gap-2">
-        {attendances.length && attendances.map(attendance =>
-          <AttendeeBadge
-            key={attendance.id}
-            label={attendance.attendeeName}
-            status={attendance.status as AttendanceStatus}
-          />
-        )}
+        {
+          attendances.length
+            ? attendances.map(attendance =>
+                <AttendeeBadge
+                  key={attendance.id}
+                  label={attendance.attendeeName}
+                  status={attendance.status as AttendanceStatus}
+                />
+              )
+            : <></>
+        }
       </div>
     </div>
   );

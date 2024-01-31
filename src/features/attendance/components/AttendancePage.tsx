@@ -102,9 +102,9 @@ export const AttendancePage = ({ event }: Props) => {
   ];
 
   return (
-    <div className="relative md:h-full md:overflow-auto md:flex">
+    <div className="relative md:h-full md:flex md:overflow-hidden">
 
-      <div className="md:w-1/3 md:border-r md:h-full lg:w-1/2">
+      <div className="md:overflow-auto md:w-1/3 md:border-r md:h-full lg:w-1/2">
         <header className="pt-16 pb-8">
           <h1 className="text-3xl font-semibold truncate md:text-lg lg:text-2xl">
             {event.name}
