@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { format, parseISO, toDate } from "date-fns";
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 import { toYMDStr as toYMDStrUtil } from "@/utils";
 
 export const useDateUtil = () => {
@@ -34,10 +34,10 @@ export const useDateUtil = () => {
    * @param {string} utcStr
    * @return {string} ex) Fri, 1st, Apr, 2024
    */
-  const formatUtcStr = useCallback((utcStr: string): string => {
+  const utcToOrdinalDate = useCallback((utcStr: string): string => {
     const localDate = toDate(parseISO(utcStr));
     return format(localDate, 'EEE, do, MMM, yyyy');
   }, []);
 
-  return { extract12HourFormat, toYMDStr, formatUtcStr };
+  return { extract12HourFormat, toYMDStr, utcToOrdinalDate };
 };

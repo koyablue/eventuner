@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 import { toYMDStr } from "@/utils";
 
 type Time = {

@@ -2,11 +2,6 @@ export type Attending = 1;
 export type NotAttending = 2;
 export type NotSure = 3;
 
-export type AttendanceStatusType =
-  | Attending
-  | NotAttending
-  | NotSure;
-
 export const attendanceStatus: {
   attending: Attending
   notAttending: NotAttending

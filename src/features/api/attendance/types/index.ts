@@ -1,4 +1,4 @@
-import { AttendanceStatus } from "@/types/event";
+import { AttendanceStatus } from "@/types/models/event";
 
 type Attendances = {
   eventDateId: number

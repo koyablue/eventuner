@@ -1,9 +1,19 @@
-import { AttendanceStatus } from "../event";
+import { ValueOf } from "../util";
+import { attendanceStatus } from "@/constants/attendance";
+
+export type AmPmString = "am" | "pm";
+
+export type AttendanceStatus = ValueOf<typeof attendanceStatus>;
+
+// type guard for AttendanceStatus
+export function isAttendanceStatus(value: number): value is AttendanceStatus {
+  const validAttendanceStatuses: AttendanceStatus[] = Object.values(attendanceStatus);
+  return validAttendanceStatuses.includes(value as AttendanceStatus);
+}
 
 export type Attendance = {
   id: number
-  eventId: number
-  eventDateId: number
+  timeRangeId: number
   attendeeName: string
   anonymousAttendeeId: string
   status: AttendanceStatus
@@ -14,6 +24,7 @@ export type Attendance = {
 export type TimeRange = {
   startAt: Date
   endAt?: Date | null
+  attendances?: Attendance[]
 };
 
 export type EventDate = {
@@ -23,7 +34,6 @@ export type EventDate = {
   timeRanges: TimeRange[]
   createdAt: Date
   updatedAt: Date
-  attendances?: Attendance[]
 };
 
 export type Event = {
@@ -35,5 +45,4 @@ export type Event = {
   createdAt: Date;
   updatedAt: Date;
   eventDates: EventDate[]
-  attendances: Attendance[]
 };

@@ -1,4 +1,4 @@
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type CreateDateTimeObjParams = {
   year: number,

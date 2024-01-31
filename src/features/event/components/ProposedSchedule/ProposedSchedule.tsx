@@ -8,7 +8,7 @@ import { ProposedScheduleLabel } from "./ProposedScheduleLabel";
 import { useDateUtil } from "@/hooks/useDateUtil";
 
 import { useEventDateStore, isNewTimeRange, isExistingTimeRange, type TimeRange } from "@/stores/eventDateStore";
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type Props = {
   date: Date
