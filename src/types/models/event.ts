@@ -22,6 +22,7 @@ export type Attendance = {
 };
 
 export type TimeRange = {
+  id: number
   startAt: Date
   endAt?: Date | null
   attendances?: Attendance[]

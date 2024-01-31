@@ -43,17 +43,20 @@ const convertTimeRange = (
     | PrismaTimeRange
     | Prisma.TimeRangeGetPayload<{ include: { attendances: true } }>
 ): TimeRange => {
-  if ("attendances" in prismaTimeRange) {
-    return {
-      startAt: prismaTimeRange.startAt,
-      endAt: prismaTimeRange.endAt,
-      attendances: prismaTimeRange.attendances.map(convertAttendance),
-    };
-  }
-  return {
+  const commonProps = {
+    id: prismaTimeRange.id,
     startAt: prismaTimeRange.startAt,
     endAt: prismaTimeRange.endAt,
   };
+
+  if ("attendances" in prismaTimeRange) {
+    return {
+      ...commonProps,
+      attendances: prismaTimeRange.attendances.map(convertAttendance),
+    };
+  }
+
+  return commonProps;
 };
 
 /**
