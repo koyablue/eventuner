@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { EventDate as PrismaEventDate } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { CreateEventDto, UpdateEventDto } from "../types";
-import { createDateTimeObject } from "../services";
+import { CreateEventDto, UpdateEventDto } from "@/features/api/event/types";
+import { createDateTimeObj } from "@/features/api/event/services";
 import { Event } from "@/types/models/event";
 import { prismaEventToEventModel } from "./utils";
 
@@ -35,7 +35,11 @@ export const getEventByUuid = async (uuid: string): Promise<Event> => {
   try {
     const event = await prisma.event.findFirstOrThrow({
       where: { uuid },
-      include: { eventDates: true, attendances: true }
+      include: {
+        eventDates: {
+          include: { attendances: true }
+        }
+      }
     });
 
     return prismaEventToEventModel(event);
@@ -44,10 +48,11 @@ export const getEventByUuid = async (uuid: string): Promise<Event> => {
   }
 };
 
+
 /**
  * Create new event
  *
- * @param {CreateEventRepositoryDto} values
+ * @param {CreateEventDto} values
  * @return {Promise<Event>}
  */
 export const createEvent = async (values: CreateEventDto): Promise<Event> => {
@@ -60,30 +65,36 @@ export const createEvent = async (values: CreateEventDto): Promise<Event> => {
         token: uuidv4(),
         name,
         description,
+
+        // Create relation model EventDate
         eventDates: {
           create: eventDates.map(eventDate => ({
             date: new Date(eventDate.year, eventDate.month - 1, eventDate.day),
-            startAt: createDateTimeObject({
-              year: eventDate.year,
-              month: eventDate.month,
-              day: eventDate.day,
-              hour: eventDate.startAt.hour,
-              minutes: eventDate.startAt.minutes,
-              ampm: eventDate.startAt.ampm,
-            }),
-            endAt: eventDate.endAt && createDateTimeObject({
-              year: eventDate.year,
-              month: eventDate.month,
-              day: eventDate.day,
-              hour: eventDate.endAt.hour,
-              minutes: eventDate.endAt.minutes,
-              ampm: eventDate.endAt.ampm,
-            })
+            timeRanges: {
+              create: eventDate.timeRanges.map(timeRange => ({
+                startAt: createDateTimeObj({
+                  year: eventDate.year,
+                  month: eventDate.month,
+                  day: eventDate.day,
+                  ...timeRange.startAt,
+                }),
+                endAt: timeRange.endAt
+                  ? createDateTimeObj({
+                      year: eventDate.year,
+                      month: eventDate.month,
+                      day: eventDate.day,
+                      ...timeRange.endAt,
+                    })
+                  : null,
+              }))
+            }
           }))
         }
       },
       include: {
-        eventDates: true,
+        eventDates: {
+          include: { timeRanges: true }
+        },
       },
     });
 
@@ -113,24 +124,24 @@ export const updateEvent = async (event: Event, values: UpdateEventDto): Promise
         const eventDateToCreate: Omit<PrismaEventDate, "id" | "createdAt" | "updatedAt">[] = addedDates.map(eventDate => ({
           eventId: event.id,
           date: new Date(eventDate.year, eventDate.month - 1, eventDate.month),
-          startAt: createDateTimeObject({
-            year: eventDate.year,
-            month: eventDate.month,
-            day: eventDate.day,
-            hour: eventDate.startAt.hour,
-            minutes: eventDate.startAt.minutes,
-            ampm: eventDate.startAt.ampm,
-          }),
-          endAt: eventDate.endAt
-            ? createDateTimeObject({
+          timeRanges: {
+            create: eventDate.timeRanges.map(timeRange => ({
+              startAt: createDateTimeObj({
                 year: eventDate.year,
                 month: eventDate.month,
                 day: eventDate.day,
-                hour: eventDate.endAt.hour,
-                minutes: eventDate.endAt.minutes,
-                ampm: eventDate.endAt.ampm,
-              })
-            : null,
+                ...timeRange.startAt,
+              }),
+              endAt: timeRange.endAt
+                ? createDateTimeObj({
+                    year: eventDate.year,
+                    month: eventDate.month,
+                    day: eventDate.day,
+                    ...timeRange.endAt,
+                  })
+                : null,
+            }))
+          }
         }));
 
         await prisma.eventDate.createMany({ data: eventDateToCreate });

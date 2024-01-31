@@ -11,12 +11,16 @@ export type Attendance = {
   updatedAt: Date
 };
 
+export type TimeRange = {
+  startAt: Date
+  endAt?: Date | null
+};
+
 export type EventDate = {
   id: number
   eventId: number
   date: Date
-  startAt: Date
-  endAt?: Date | null
+  timeRanges: TimeRange[]
   createdAt: Date
   updatedAt: Date
   attendances?: Attendance[]

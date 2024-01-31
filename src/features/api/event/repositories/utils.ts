@@ -1,9 +1,9 @@
 import {Prisma, Event as PrismaEvent } from "@prisma/client";
-import { Event } from "@/types/models/event";
+import { Attendance, Event, EventDate } from "@/types/models/event";
 import { AttendanceStatus } from "@/types/event";
 
 type PrismaEventWithEventDates = Prisma.EventGetPayload<{
-  include: { eventDates: true }
+  include: { eventDates: { include: { timeRanges: true } } }
 }>;
 
 type PrismaEventWithAttendances = Prisma.EventGetPayload<{
@@ -11,7 +11,7 @@ type PrismaEventWithAttendances = Prisma.EventGetPayload<{
 }>;
 
 type PrismaEventWithEventDatesAndAttendances = Prisma.EventGetPayload<{
-  include: { eventDates: true, attendances: true }
+  include: { eventDates: { include: { timeRanges: true } }, attendances: true }
 }>;
 
 /**
@@ -25,7 +25,7 @@ type PrismaEventWithEventDatesAndAttendances = Prisma.EventGetPayload<{
  */
 export const prismaEventToEventModel = (
   prismaEvent:
-    |PrismaEvent
+    | PrismaEvent
     | PrismaEventWithEventDates
     | PrismaEventWithAttendances
     | PrismaEventWithEventDatesAndAttendances
@@ -42,25 +42,30 @@ export const prismaEventToEventModel = (
     updatedAt: prismaEvent.updatedAt,
   };
 
-  if ('eventDates' in prismaEvent) {
-    event.eventDates = prismaEvent.eventDates.map(eventDate => ({
-      id: eventDate.id,
-      eventId: eventDate.eventId,
-      date: eventDate.date,
-      startAt: eventDate.startAt,
-      endAt: eventDate.endAt,
-      createdAt: eventDate.createdAt,
-      updatedAt: eventDate.updatedAt,
-    }));
+  if ("eventDates" in prismaEvent) {
+    event.eventDates = prismaEvent.eventDates.map(eventDate => {
+      const converted: EventDate = {
+        id: eventDate.id,
+        eventId: eventDate.eventId,
+        date: eventDate.date,
+        timeRanges: eventDate.timeRanges,
+        createdAt: eventDate.createdAt,
+        updatedAt: eventDate.updatedAt,
+      };
+      if ("attendances" in eventDate) {
+        converted.attendances = eventDate.attendances as Attendance[];
+      }
+      return converted;
+    });
   }
 
-  if ('attendances' in prismaEvent) {
+  if ("attendances" in prismaEvent) {
     event.attendances = prismaEvent.attendances.map(attendance => ({
       id: attendance.id,
       eventId: attendance.eventDateId,
       eventDateId: attendance.eventDateId,
-      participantName: attendance.participantName,
-      anonymousParticipantId: attendance.anonymousParticipantId,
+      attendeeName: attendance.attendeeName,
+      anonymousAttendeeId: attendance.anonymousAttendeeId,
       status: attendance.status as AttendanceStatus,
       createdAt: attendance.createdAt,
       updatedAt: attendance.updatedAt

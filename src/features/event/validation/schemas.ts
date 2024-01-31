@@ -27,6 +27,7 @@ const EventFormEventDateSchema = z.object({
   timeRanges: z.array(EventFormTimeRangeSchema),
 });
 
+// Form request validation for creating new event
 export const NewEventFormSchema = z.object({
   name: z
     .string({

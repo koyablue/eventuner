@@ -30,7 +30,6 @@ export const isNewTimeRange = (timeRange: TimeRange): timeRange is NewTimeRange 
 
 export type TimeRange = ExistingTimeRange | NewTimeRange;
 
-
 export type EventDate = {
   date: string; // yyyy-mm-dd string
   timeRanges: TimeRange[];

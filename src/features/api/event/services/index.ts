@@ -24,7 +24,7 @@ type CreateDateTimeObjParams = {
  * }
  * @return {Date}
  */
-export const createDateTimeObject = ({
+export const createDateTimeObj = ({
   year,
   month,
   day,
