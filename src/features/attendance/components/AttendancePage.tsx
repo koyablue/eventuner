@@ -1,23 +1,14 @@
-"use client";
-
-import { formatISO } from "date-fns";
-
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-
-import { DateAttendanceSection } from "@/features/attendance/components/DateAttendanceSection";
+import { AttendanceFormContents } from "./AttendanceFormContents";
 import { createAttendancesAction } from "../actions/createAttendancesAction";
 
 import { Event } from "@/types/models/event";
-import { useDateUtil } from "@/hooks/useDateUtil";
 
 type Props = {
   event: Event
 };
 
 export const AttendancePage = ({ event }: Props) => {
-  const { utcToOrdinalDate } = useDateUtil();
+
 
   // event looks like this:
     // {
@@ -126,21 +117,7 @@ export const AttendancePage = ({ event }: Props) => {
 
       <div className="overflow-auto flex-1 md:w-1/2 md:pl-4 lg:pl-8 md:h-full">
         <form action={createAttendancesAction} className="h-full">
-          <div className="py-8">
-            <Label>Your name</Label>
-            <Input name="attendeeName" className="focus-visible:border-emerald-500 focus-visible:ring-0 focus-visible:ring-offset-0" />
-          </div>
-          {event.eventDates.map(eventDate =>
-            <DateAttendanceSection key={eventDate.id} eventDate={eventDate} />
-          )}
-          <div className="fixed bottom-10 right-6 z-50 md:absolute md:mb-4 md:mr-4 md:bottom-0 md:right-0">
-            <Button
-              type="submit"
-              className="bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 shadow-lg"
-            >
-              Register Attendance
-            </Button>
-          </div>
+          <AttendanceFormContents event={event} />
         </form>
       </div>
     </div>
