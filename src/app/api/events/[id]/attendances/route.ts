@@ -17,10 +17,9 @@ import { CreateAttendancesUseCaseDto } from "@/features/api/attendance/types/dto
  */
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { uuid: string } },
+  _: { params: { id: string } },
   _res: NextResponse
 ): Promise<ApiHandlerResponse<number, AttendancesValidationErrors>> => {
-  const { uuid } = params;
   try {
     await dbConnect();
 
@@ -37,6 +36,8 @@ export const POST = async (
 
     const dto: Omit<CreateAttendancesUseCaseDto, "anonymousAttendeeId"> = {
       attendeeName: validatedFields.data.attendeeName,
+      // iterate because attendanceStatus needs to be casted
+      // just workaround so need to be fixed
       attendances: validatedFields.data.attendances.map(att => ({
         timeRangeId: att.timeRangeId,
         attendanceStatus: att.attendanceStatus as AttendanceStatus,
