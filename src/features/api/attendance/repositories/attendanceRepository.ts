@@ -1,28 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { Attendance as PrismaAttendance } from "@prisma/client";
-import { Event } from "@/types/models/event";
-import { CreateAttendancesDto } from "../types";
+import { CreateAttendanceRepoDto } from "@/features/api/attendance/types/dto";
 
 /**
  *
  *
- * @param {Event} event
- * @param {CreateAttendancesDto} values
- * @return {Promise<number>}
+ * @param {CreateAttendanceRepoDto[]} values
+ * @return {Promise<number>} number of created records
  */
-export const createManyAttendances = async (event: Event, values: CreateAttendancesDto): Promise<number> => {
-  const eventId = event.id;
-  const { attendeeName, anonymousAttendeeId, attendances } = values;
+export const createManyAttendances = async (values: CreateAttendanceRepoDto[]): Promise<number> => {
+  const attendancesToCreate: Omit<PrismaAttendance, "id" | "createdAt" | "updatedAt">[] = values.map(v => ({
+    attendeeName: v.attendeeName,
+    anonymousAttendeeId: v.anonymousAttendeeId,
+    timeRangeId: v.timeRangeId,
+    status: v.attendanceStatus,
+  }));
 
   try {
-    const attendancesToCreate: Omit<PrismaAttendance, "id" | "createdAt" | "updatedAt">[] = attendances.map(attendance => ({
-      eventId,
-      eventDateId: attendance.eventDateId,
-      attendeeName,
-      anonymousAttendeeId,
-      status: attendance.status
-    }));
-
     const res = await prisma.attendance.createMany({
       data: attendancesToCreate
     });

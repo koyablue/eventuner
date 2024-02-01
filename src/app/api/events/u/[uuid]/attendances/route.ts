@@ -3,7 +3,9 @@ import { dbConnect, dbDisconnect } from "@/lib/prisma";
 import { validateNewAttendances, AttendancesValidationErrors } from "@/features/api/attendance/validation/validators";
 import { createManyAttendancesUseCase } from "@/features/api/attendance/useCases/createManyAttendancesUseCase";
 import { ApiHandlerResponse } from "@/types/api";
-import { Attendance } from "@/types/models/event";
+import { AttendanceStatus } from "@/types/models/event";
+import { CreateAttendancesUseCaseDto } from "@/features/api/attendance/types/dto";
+
 
 /**
  * Create attendances
@@ -17,13 +19,14 @@ export const POST = async (
   req: NextRequest,
   { params }: { params: { uuid: string } },
   _res: NextResponse
-): Promise<ApiHandlerResponse<{attendances: Attendance[]}, AttendancesValidationErrors>> => {
+): Promise<ApiHandlerResponse<number, AttendancesValidationErrors>> => {
   const { uuid } = params;
   try {
     await dbConnect();
 
     const newAttendancesData = await req.json();
 
+    // Validation
     const validatedFields = validateNewAttendances(newAttendancesData);
     if (!validatedFields.success) {
       return NextResponse.json({
@@ -32,12 +35,18 @@ export const POST = async (
       }, { status: 400 });
     }
 
-    const attendances = await createManyAttendancesUseCase({
-      eventUuid: uuid,
-      ...validatedFields.data,
-    });
+    const dto: Omit<CreateAttendancesUseCaseDto, "anonymousAttendeeId"> = {
+      attendeeName: validatedFields.data.attendeeName,
+      attendances: validatedFields.data.attendances.map(att => ({
+        timeRangeId: att.timeRangeId,
+        attendanceStatus: att.attendanceStatus as AttendanceStatus,
+      }))
+    };
 
-    return NextResponse.json({ message: "Success", data: { attendances } }, { status: 201 });
+    // Save attendances
+    const createdCount = await createManyAttendancesUseCase(dto);
+
+    return NextResponse.json({ message: "Success", data: createdCount }, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });

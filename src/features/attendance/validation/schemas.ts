@@ -7,7 +7,6 @@ const AttendanceStatusSchema = z.number().refine(v => isAttendanceStatus(v), {
 
 const AttendanceSchema = z.record(AttendanceStatusSchema);
 
-
 // Validation for attendance form
 export const CreateAttendancesSchema = z.object({
   attendeeName: z
