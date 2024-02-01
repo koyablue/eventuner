@@ -64,16 +64,16 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
       <div>
         <RadioGroup name={radioGroupName} defaultValue={String(attendanceStatus.notAttending)}>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value={String(attendanceStatus.attending)} id="radio-attending" />
-            <Label htmlFor="radio-attending" className="cursor-pointer">Attending</Label>
+            <RadioGroupItem value={String(attendanceStatus.attending)} id={`radio-attending-${radioGroupName}`} />
+            <Label htmlFor={`radio-attending-${radioGroupName}`} className="cursor-pointer">Attending</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value={String(attendanceStatus.notSure)} id="radio-maybe" />
-            <Label htmlFor="radio-maybe" className="cursor-pointer">Maybe</Label>
+            <RadioGroupItem value={String(attendanceStatus.notSure)} id={`radio-maybe-${radioGroupName}`} />
+            <Label htmlFor={`radio-maybe-${radioGroupName}`} className="cursor-pointer">Maybe</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value={String(attendanceStatus.notAttending)} id="radio-not-attending" />
-            <Label htmlFor="radio-not-attending" className="cursor-pointer">Not attending</Label>
+            <RadioGroupItem value={String(attendanceStatus.notAttending)} id={`radio-not-attending-${radioGroupName}`} />
+            <Label htmlFor={`radio-not-attending-${radioGroupName}`} className="cursor-pointer">Not attending</Label>
           </div>
         </RadioGroup>
       </div>
