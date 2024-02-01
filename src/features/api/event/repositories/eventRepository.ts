@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { EventDate as PrismaEventDate } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { CreateEventDto, UpdateEventDto } from "@/features/api/event/types";
+import { CreateEventDto, UpdateEventDto } from "@/features/api/event/types/dto";
 import { createDateTimeObj } from "@/features/api/event/services";
 import { Event } from "@/types/models/event";
 import { convertEvent } from "@/features/api/event/repositories/utils";

@@ -1,6 +1,6 @@
 import { Event } from "@/types/models/event";
 import { createEvent } from "../repositories/eventRepository";
-import { CreateEventDto, CreateEventReqDto } from "../types";
+import { CreateEventDto, CreateEventReqDto } from "../types/dto";
 
 /**
  *
