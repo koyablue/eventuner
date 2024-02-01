@@ -49,7 +49,7 @@ export const DateAttendanceSection = ({ eventDate }: Props) => {
           {
             eventDate.timeRanges.map(tr =>
               <TimeRangeAttendanceSection
-                radioGroupName={`attendances[timeRangeId-${tr.id}]`}
+                radioGroupName={`attendances-${tr.id}`}
                 key={uuidv4()}
                 timeRangeStr={formatTimeRange(tr)}
                 attendances={tr.attendances}
