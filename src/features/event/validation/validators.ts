@@ -23,7 +23,7 @@ export type ValidateNewEventFormReturnType = {
  * @param {string} [message='']
  * @return {ValidateNewEventFormReturnType}
  */
-export const validateNewEventFormReq = (reqBody: any, message =''): ValidateNewEventFormReturnType => {
+export const validateNewEventFormReq = (reqBody: any, message = ""): ValidateNewEventFormReturnType => {
   console.log(JSON.stringify(reqBody, null, 2));
   const validatedFields = NewEventFormSchema.safeParse(reqBody);
   console.log('validatedFields:', validatedFields);
