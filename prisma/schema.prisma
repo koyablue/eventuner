@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id Int @id @default(autoincrement())
+  uuid String
+  token String
+  name String @db.VarChar(100)
+  description String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relations
+  eventDates EventDate[]
+
+  @@index([uuid])
+
+  @@map("events") // table name
+}
+
+// Model for proposed event date
+model EventDate {
+  id Int @id @default(autoincrement())
+  eventId Int @map("event_id")
+  date DateTime
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relations
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  timeRanges TimeRange[]
+
+  @@map("event_dates")
+}
+
+model TimeRange {
+  id Int @id @default(autoincrement())
+  eventDateId Int @map("event_date_id")
+  startAt DateTime @map("start_at")
+  endAt DateTime? @map("end_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relations
+  eventDate EventDate @relation(fields: [eventDateId], references: [id], onDelete: Cascade)
+  attendances Attendance[]
+
+  @@map("time_ranges")
+}
+
+// Model for participatns' attendance
+model Attendance {
+  id Int @id @default(autoincrement())
+  timeRangeId Int @map("time_range_id")
+  attendeeName String @map("attendee_name")
+  anonymousAttendeeId String @map("anonymous_attendee_id")
+  status Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // relations
+  timeRange TimeRange @relation(fields: [timeRangeId], references: [id], onDelete: Cascade)
+
+  @@index([anonymousAttendeeId])
+
+  @@map("attendances")
+}
