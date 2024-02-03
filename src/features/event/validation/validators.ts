@@ -24,12 +24,9 @@ export type ValidateNewEventFormReturnType = {
  * @return {ValidateNewEventFormReturnType}
  */
 export const validateNewEventFormReq = (reqBody: any, message = ""): ValidateNewEventFormReturnType => {
-  console.log(JSON.stringify(reqBody, null, 2));
   const validatedFields = NewEventFormSchema.safeParse(reqBody);
-  console.log('validatedFields:', validatedFields);
 
   if (!validatedFields.success) {
-    console.log('validation error:',validatedFields.error.flatten())
     return {
       data: null,
       errors: validatedFields.error.flatten().fieldErrors,
