@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate:dev": "npx prisma migrate dev --name",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "build:vercel": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@prisma/client": "^5.7.1",
@@ -23,6 +24,7 @@
     "lucide-react": "^0.307.0",
     "next": "14.0.4",
     "path-kanri": "^0.2.2",
+    "prisma": "^5.9.1",
     "react": "^18",
     "react-day-picker": "^8.10.0",
     "react-dom": "^18",
@@ -44,7 +46,6 @@
     "eslint-config-next": "14.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
     "postcss": "^8",
-    "prisma": "^5.7.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
