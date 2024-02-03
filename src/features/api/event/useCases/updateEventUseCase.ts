@@ -1,5 +1,5 @@
 import { getEventById, updateEvent } from "@/features/api/event/repositories/eventRepository";
-import { UpdateEventDto } from "../types";
+import { UpdateEventDto } from "../types/dto";
 import { Event } from "@/types/models/event";
 
 /**

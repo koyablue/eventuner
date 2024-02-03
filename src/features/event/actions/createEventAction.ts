@@ -3,7 +3,7 @@
 import { EventDate } from "@/stores/eventDateStore";
 import { NewEventFormValidationError, validateNewEventFormReq } from "../validation/validators";
 import { createNewEventService } from "../services/createNewEventService";
-import type { AmPmString } from "@/types/event";
+import type { AmPmString } from "@/types/models/event";
 import type { Event } from "@/types/models/event";
 
 type CreateEventActionResponse<T> = {
@@ -71,8 +71,6 @@ export const createEventAction = async (
   eventDates: EventDate[],
   formData: FormData
 ): Promise<CreateEventActionResponse<Event>> => {
-  console.log("EVENT_DATES_IN_ACTION:", eventDates);
-
   // Format request values
   const formattedEventDates = formatEventDates(eventDates);
 

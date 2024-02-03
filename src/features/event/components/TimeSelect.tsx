@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type Props = {
   defaultHours?: number

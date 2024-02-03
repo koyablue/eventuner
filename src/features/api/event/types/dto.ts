@@ -1,4 +1,4 @@
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type EventDateTime = {
   hour: number
@@ -21,12 +21,16 @@ export type CreateEventReqDto = {
   }[]
 }
 
+type TimeRange = {
+  startAt: EventDateTime;
+  endAt?: EventDateTime | null;
+};
+
 type EventDate = {
   year: number;
   month: number;
   day: number;
-  startAt: EventDateTime;
-  endAt?: EventDateTime | null;
+  timeRanges: TimeRange[]
 };
 
 // For useCase -> repository data transfer

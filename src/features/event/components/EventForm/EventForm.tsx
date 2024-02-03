@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SubmitButton } from "./SubmitButton";
 import { Calendar } from "@/features/event/components/Calendar/Calendar";
-import { FormError } from "@/features/event/components/FormError";
+import { FormError } from "@/components/form/FormError";
 import { ProposedSchedule } from "@/features/event/components/ProposedSchedule/ProposedSchedule";
 import { useEventFormError } from "@/features/event/hooks/useEventFormError";
 

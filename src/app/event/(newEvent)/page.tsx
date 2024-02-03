@@ -5,22 +5,19 @@ import { useDebouncedCallback } from "use-debounce";
 import { DayModifiers } from "react-day-picker";
 import { add, parseISO } from "date-fns";
 
-import {
-  EventCreated,
-  EventForm,
-  createEventAction,
-  useEventFormError,
-} from "@/features/event";
-
-import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
-import { useBeforeUnload } from "@/hooks/useBeforeUnload";
+import { EventCreated } from "@/features/event/components/EventCreated";
+import { EventForm } from "@/features/event/components/EventForm/EventForm";
+import { createEventAction } from "@/features/event/actions/createEventAction";
+import { useEventFormError } from "@/features/event/hooks/useEventFormError";
 
 // stores
 import { useEventDateStore, type TimeRange } from "@/stores/eventDateStore";
 
-import { extract12HourFormat } from "@/utils";
-import { cn } from "@/lib/utils";
+import { useDateUtil } from "@/hooks/useDateUtil";
+import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
+import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import { showToast } from "@/lib/react-toastify";
+import { submitDebounceDuration } from "@/constants/form";
 
 /**
  * Event create page
@@ -30,6 +27,8 @@ import { showToast } from "@/lib/react-toastify";
 const NewEvent = () => {
   // Set beforeunload event handler
   useBeforeUnload();
+
+  const { extract12HourFormat } = useDateUtil();
 
   const { eventDates, addDate, removeDate, resetDates } = useEventDateStore();
   const [calendarSelectedDays, setCalendarSelectedDays] = useState<Date[] | undefined>();
@@ -99,7 +98,7 @@ const NewEvent = () => {
       console.error(error);
       showToast("error", <p>Failed to create event</p>)
     }
-  }, 500);
+  }, submitDebounceDuration);
 
   /**
    * Create time range object of current time ~ current time + 1hour
@@ -134,12 +133,8 @@ const NewEvent = () => {
     setCalendarSelectedDays(updatedSelectedDays);
   }, [eventDates]);
 
-  // TODO: Loading view
-  // TODO: Separate form into another component
-
   return (
-    <main className="flex justify-center min-h-screen bg-slate-100 md:p-24">
-      <div className="w-full min-w-[320px] max-w-5xl min-h-[600px] bg-white px-8 rounded-md shadow-md lg:px-4 lg:h-[calc(100vh-96px-96px)]">
+    <>
         {isSubmitted
           ? <EventCreated uuid={createdEventUuid} />
           : <EventForm
@@ -154,8 +149,7 @@ const NewEvent = () => {
               submitAction={callCreateEventAction}
             />
         }
-      </div>
-    </main>
+    </>
   )
 }
 

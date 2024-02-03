@@ -1,4 +1,4 @@
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type CreateDateTimeObjParams = {
   year: number,
@@ -24,7 +24,7 @@ type CreateDateTimeObjParams = {
  * }
  * @return {Date}
  */
-export const createDateTimeObject = ({
+export const createDateTimeObj = ({
   year,
   month,
   day,

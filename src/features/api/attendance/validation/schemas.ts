@@ -1,18 +1,18 @@
 import { z } from "zod";
-import { attendanceStatus } from "@/constants/attendance";
+import { isAttendanceStatus } from "@/types/models/event";
 
-export const AttendanceStatusSchema = z.union([
-  z.literal(attendanceStatus.attending),
-  z.literal(attendanceStatus.notAttending),
-  z.literal(attendanceStatus.notSure)
-]);
+const AttendanceStatusSchema = z
+  .number()
+  .refine(status => isAttendanceStatus(status), {
+    message: "Invalid attendance status",
+  });
 
-export const EventDateAndStatusMapSchema = z.object({
-  eventDateId: z.coerce.number(),
-  status: AttendanceStatusSchema
+const TimeRangeAttendanceStatusSchema = z.object({
+  timeRangeId: z.number(),
+  attendanceStatus: AttendanceStatusSchema,
 });
 
 export const AttendancesSchema = z.object({
-  participantName: z.string().min(1).max(50),
-  attendances: z.array(EventDateAndStatusMapSchema).nonempty()
+  attendeeName: z.string().min(1).max(100),
+  attendances: z.array(TimeRangeAttendanceStatusSchema).nonempty()
 });

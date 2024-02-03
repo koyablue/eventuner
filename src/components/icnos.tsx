@@ -7,6 +7,9 @@ import {
   Check,
   CalendarCheck,
   Loader2,
+  HelpCircle,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -19,4 +22,7 @@ export const Icons = {
   check: Check,
   calendarCheck: CalendarCheck,
   loaderC: Loader2,
+  questionCircle: HelpCircle,
+  checkCircle: CheckCircle2,
+  xCircle: XCircle,
 };

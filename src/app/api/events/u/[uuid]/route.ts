@@ -10,13 +10,13 @@ import { Event } from "@/types/models/event";
  * @param {NextRequest} _req
  * @param {{ params: { uuid: string } }} { params }
  * @param {NextResponse} _res
- * @return {Promise<ApiHandlerResponse<{event: Event}>>}
+ * @return {Promise<ApiHandlerResponse<Event>>}
  */
 export const GET = async (
   _req: NextRequest,
   { params }: { params: { uuid: string } },
   _res: NextResponse,
-): Promise<ApiHandlerResponse<{event: Event}>> => {
+): Promise<ApiHandlerResponse<Event>> => {
   const { uuid } = params;
 
   try {
@@ -24,7 +24,7 @@ export const GET = async (
 
     const event = await getEventByUuidUseCase(uuid);
 
-    return NextResponse.json({ message: "Success", data: {event} }, { status: 200 });
+    return NextResponse.json({ message: "Success", data: { ...event } }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Error", error },

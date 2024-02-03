@@ -7,6 +7,8 @@ const apiBaseUrl = getApiBaseUrl();
 const { getPath: getApiEndpoint, getFullPath: getApiEndpointFull } =
   pathManager({
       createEvent: "/events",
+      getEventDetail: "/events/u/{uuid}",
+      createAttendances: "/events/{eventId}/attendances",
     }, apiBaseUrl);
 
 export { getApiEndpoint, getApiEndpointFull };

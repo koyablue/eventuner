@@ -1,71 +1,118 @@
-import {Prisma, Event as PrismaEvent } from "@prisma/client";
-import { Event } from "@/types/models/event";
-import { AttendanceStatus } from "@/types/event";
-
-type PrismaEventWithEventDates = Prisma.EventGetPayload<{
-  include: { eventDates: true }
-}>;
-
-type PrismaEventWithAttendances = Prisma.EventGetPayload<{
-  include: { attendances: true }
-}>;
-
-type PrismaEventWithEventDatesAndAttendances = Prisma.EventGetPayload<{
-  include: { eventDates: true, attendances: true }
-}>;
+import {
+  Prisma,
+  Event as PrismaEvent,
+  EventDate as PrismaEventDate,
+  TimeRange as PrismaTimeRange,
+  Attendance as PrismaAttendance,
+} from "@prisma/client";
+import { Event, EventDate, TimeRange, Attendance } from "@/types/models/event";
+import { isAttendanceStatus } from "@/types/models/event";
 
 /**
- * Convert PrismaEvent to application's Event obj
+ * Convert Prisma Attendance model into application's Attendance model
+ *
+ * @param {PrismaAttendance} prismaAttendance
+ * @return {Attendance}
+ */
+const convertAttendance = (prismaAttendance: PrismaAttendance): Attendance => {
+  // Validate attendance status
+  if (!isAttendanceStatus(prismaAttendance.status)) {
+    throw new Error("Invalid attendance status");
+  }
+
+  return {
+    id: prismaAttendance.id,
+    timeRangeId: prismaAttendance.timeRangeId,
+    attendeeName: prismaAttendance.attendeeName,
+    anonymousAttendeeId: prismaAttendance.anonymousAttendeeId,
+    status: prismaAttendance.status,
+    createdAt: prismaAttendance.createdAt,
+    updatedAt: prismaAttendance.updatedAt
+  };
+};
+
+/**
+ * Convert Prisma TimeRange model into application's TimeRange model
+ *
+ * @param {(PrismaTimeRange
+ *     | Prisma.TimeRangeGetPayload<{ include: { attendances: true } }>)} prismaTimeRange
+ * @return {TimeRange}
+ */
+const convertTimeRange = (
+  prismaTimeRange:
+    | PrismaTimeRange
+    | Prisma.TimeRangeGetPayload<{ include: { attendances: true } }>
+): TimeRange => {
+  const commonProps = {
+    id: prismaTimeRange.id,
+    startAt: prismaTimeRange.startAt,
+    endAt: prismaTimeRange.endAt,
+  };
+
+  if ("attendances" in prismaTimeRange) {
+    return {
+      ...commonProps,
+      attendances: prismaTimeRange.attendances.map(convertAttendance),
+    };
+  }
+
+  return commonProps;
+};
+
+/**
+ * Convert Prisma TimeRange model into application's TimeRange model
+ *
+ * @param {(PrismaEventDate
+ *     | Prisma.EventDateGetPayload<{ include: { timeRanges: true } }>)} prismaEventDate
+ * @return {EventDate}
+ */
+const convertEventDate = (
+  prismaEventDate:
+    | PrismaEventDate
+    | Prisma.EventDateGetPayload<{ include: { timeRanges: true } }>
+): EventDate => {
+  const eventDate = {
+    id: prismaEventDate.id,
+    eventId: prismaEventDate.eventId,
+    date: prismaEventDate.date,
+    timeRanges: [] as TimeRange[],
+    createdAt: prismaEventDate.createdAt,
+    updatedAt: prismaEventDate.updatedAt
+  };
+
+  if ("timeRanges" in prismaEventDate) {
+    eventDate.timeRanges = prismaEventDate.timeRanges.map(convertTimeRange)
+  }
+
+  return eventDate;
+};
+
+/**
+ * Convert Prisma Event model into application's Event model
  *
  * @param {(PrismaEvent
- *     | PrismaEventWithEventDates
- *     | PrismaEventWithAttendances
- *     | PrismaEventWithEventDatesAndAttendances)} prismaEvent
+ *     | Prisma.EventGetPayload<{ include: { eventDates: true } }>)} prismaEvent
  * @return {Event}
  */
-export const prismaEventToEventModel = (
+export const convertEvent = (
   prismaEvent:
-    |PrismaEvent
-    | PrismaEventWithEventDates
-    | PrismaEventWithAttendances
-    | PrismaEventWithEventDatesAndAttendances
+    | PrismaEvent
+    | Prisma.EventGetPayload<{ include: { eventDates: true } }>
 ): Event => {
-  const event: Event = {
+  const event = {
     id: prismaEvent.id,
     uuid: prismaEvent.uuid,
     token: prismaEvent.token,
     name: prismaEvent.name,
     description: prismaEvent.description,
-    eventDates: [],
-    attendances: [],
+    eventDates: [] as EventDate[],
     createdAt: prismaEvent.createdAt,
     updatedAt: prismaEvent.updatedAt,
   };
 
-  if ('eventDates' in prismaEvent) {
-    event.eventDates = prismaEvent.eventDates.map(eventDate => ({
-      id: eventDate.id,
-      eventId: eventDate.eventId,
-      date: eventDate.date,
-      startAt: eventDate.startAt,
-      endAt: eventDate.endAt,
-      createdAt: eventDate.createdAt,
-      updatedAt: eventDate.updatedAt,
-    }));
-  }
-
-  if ('attendances' in prismaEvent) {
-    event.attendances = prismaEvent.attendances.map(attendance => ({
-      id: attendance.id,
-      eventId: attendance.eventDateId,
-      eventDateId: attendance.eventDateId,
-      participantName: attendance.participantName,
-      anonymousParticipantId: attendance.anonymousParticipantId,
-      status: attendance.status as AttendanceStatus,
-      createdAt: attendance.createdAt,
-      updatedAt: attendance.updatedAt
-    }));
+  if ("eventDates" in prismaEvent) {
+    event.eventDates = prismaEvent.eventDates.map(convertEventDate);
   }
 
   return event;
-}
+};

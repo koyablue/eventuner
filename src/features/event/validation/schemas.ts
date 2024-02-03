@@ -27,6 +27,7 @@ const EventFormEventDateSchema = z.object({
   timeRanges: z.array(EventFormTimeRangeSchema),
 });
 
+// Form request validation for creating new event
 export const NewEventFormSchema = z.object({
   name: z
     .string({
@@ -34,7 +35,7 @@ export const NewEventFormSchema = z.object({
       invalid_type_error: "Event name is invalid",
     })
     .min(1, { message: "Please enter the event name" })
-    .max(100, { message: "Event name must be less than 100 characters." }),
+    .max(100, { message: "Event name must be less than 100 characters" }),
   description: z
     .string({
       invalid_type_error: "Event description is invalid",

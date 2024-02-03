@@ -2,12 +2,13 @@
 
 import { Fragment } from "react";
 import { add } from "date-fns";
-import { TimeSelect } from "../TimeSelect";
+import { TimeSelect } from "@/features/event/components/TimeSelect";
 import { Icons } from "@/components/icnos";
 import { ProposedScheduleLabel } from "./ProposedScheduleLabel";
-import { extract12HourFormat } from "@/utils";
+import { useDateUtil } from "@/hooks/useDateUtil";
+
 import { useEventDateStore, isNewTimeRange, isExistingTimeRange, type TimeRange } from "@/stores/eventDateStore";
-import { AmPmString } from "@/types/event";
+import { AmPmString } from "@/types/models/event";
 
 type Props = {
   date: Date
@@ -22,6 +23,7 @@ type Props = {
  * @return {JSX.Element}
  */
 export const ProposedSchedule = ({ date, timeRanges, errors }: Props) => {
+  const { extract12HourFormat } = useDateUtil();
 
   // Apply type guard for each items in the TimeRange array
   const typedTimeRanges = timeRanges.map(tr => {
