@@ -1,7 +1,7 @@
-import { AttendancePage } from "@/features/attendance/components/AttendancePage";
+import { EventDetailAndAttendancePage } from "@/features/attendance/components/EventDetailAndAttendancePage";
 import { getEventByUuidService } from "@/features/event/services/getEventByUuidService";
 
-const EventDetail = async ({
+const EventDetailAndAttendance = async ({
   params,
 }: {
   params: { uuid: string };
@@ -9,8 +9,8 @@ const EventDetail = async ({
   const event = await getEventByUuidService(params.uuid);
 
   return (
-    <AttendancePage event={event} />
+    <EventDetailAndAttendancePage event={event} />
   );
 };
 
-export default EventDetail;
+export default EventDetailAndAttendance;

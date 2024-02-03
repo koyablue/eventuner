@@ -1,23 +1,25 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { attendanceStatus } from "@/constants/attendance";
-import { AttendanceStatus } from "@/types/models/event";
+import { FormError } from "@/components/form/FormError";
 import { AttendeeBadge } from "@/features/attendance/components/AttendeeBadge";
-import { Attendance } from "@/types/models/event";
+import { NewAttendancesFormValidationError } from "@/features/attendance/validation/validators";
+import { attendanceStatus } from "@/constants/attendance";
+import { AttendanceStatus, Attendance } from "@/types/models/event";
 
 type Props = {
-  radioGroupName : string
+  timeRangeId: number
   timeRangeStr: string
   attendances?: Attendance[]
+  errors?: NewAttendancesFormValidationError["attendances"]
 };
 
 /**
  *
  *
- * @param {Props} { timeRange, attendances }
+ * @param {Props} { timeRangeId, timeRangeStr, attendances }
  * @return {JSX.Element}
  */
-export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, attendances = [] }: Props) => {
+export const TimeRangeAttendanceSection = ({ timeRangeId, timeRangeStr, attendances = [], errors }: Props) => {
 
   /**
    * Get detailed breakdown of attendance
@@ -39,20 +41,30 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
     if (!attendances.length) return detailStr();
 
     for (let i = 0; i < attendances.length; i++) {
-      if (attendances[i].status === attendanceStatus.attending) {
+      const status = attendances[i].status;
+      if (status === attendanceStatus.attending) {
         yes++;
-        continue;
-      }
-      if (attendances[i].status === attendanceStatus.notSure) {
+      } else if (status === attendanceStatus.notSure) {
         maybe++;
-        continue;
-      }
-      if (attendances[i].status === attendanceStatus.notAttending) {
+      } else if (status === attendanceStatus.notAttending) {
         declined++;
-        continue;
       }
     }
     return detailStr();
+  };
+
+  const radioGroupName = `attendances-${timeRangeId}`;
+
+  /**
+   *
+   *
+   * @return {string} error message
+   */
+  const getFirstErrorMessage = (): string => {
+    if (errors && errors.length && errors[0].timeRangeId === timeRangeId && errors[0].messages.length) {
+      return errors[0].messages[0];
+    }
+    return "";
   };
 
   return (
@@ -62,7 +74,7 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
       </div>
 
       <div>
-        <RadioGroup name={radioGroupName} defaultValue={String(attendanceStatus.notAttending)}>
+        <RadioGroup name={`attendances-${timeRangeId}`} defaultValue={String(attendanceStatus.notAttending)}>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value={String(attendanceStatus.attending)} id={`radio-attending-${radioGroupName}`} />
             <Label htmlFor={`radio-attending-${radioGroupName}`} className="cursor-pointer">Attending</Label>
@@ -76,6 +88,7 @@ export const TimeRangeAttendanceSection = ({ radioGroupName, timeRangeStr, atten
             <Label htmlFor={`radio-not-attending-${radioGroupName}`} className="cursor-pointer">Not attending</Label>
           </div>
         </RadioGroup>
+        <FormError message={getFirstErrorMessage()} />
       </div>
 
       <div>

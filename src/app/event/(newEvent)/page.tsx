@@ -17,6 +17,7 @@ import { useDateUtil } from "@/hooks/useDateUtil";
 import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import { showToast } from "@/lib/react-toastify";
+import { submitDebounceDuration } from "@/constants/form";
 
 /**
  * Event create page
@@ -97,7 +98,7 @@ const NewEvent = () => {
       console.error(error);
       showToast("error", <p>Failed to create event</p>)
     }
-  }, 500);
+  }, submitDebounceDuration);
 
   /**
    * Create time range object of current time ~ current time + 1hour

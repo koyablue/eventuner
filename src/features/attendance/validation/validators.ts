@@ -6,6 +6,7 @@ export type NewAttendancesFormValidatedData = z.infer<typeof CreateAttendancesSc
 export type NewAttendancesFormValidationError = {
   attendeeName?: string[]
   attendances?: { timeRangeId: number; messages: string[] }[]
+  server?: string
 };
 
 export type ValidateNewAttendancesFormReturnType = {
