@@ -1,7 +1,16 @@
 "use server";
 
-import { NewAttendancesFormValidationError, validateNewAttendancesReq } from "@/features/attendance/validation/validators";
-import { createNewAttendancesService, type CreateNewAttendancesServiceDto } from "@/features/attendance/services/createNewAttendancesService";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import {
+  NewAttendancesFormValidationError,
+  validateNewAttendancesReq,
+} from "@/features/attendance/validation/validators";
+import {
+  createNewAttendancesService,
+  type CreateNewAttendancesServiceDto,
+} from "@/features/attendance/services/createNewAttendancesService";
+import { getWebRoute } from "@/lib/routes/web";
 
 type CreateAttendanceActionResponse<T> = {
   data: T | undefined
@@ -24,7 +33,7 @@ export const createAttendancesAction = async ({ eventId, uuid }: { eventId: numb
   // attendances-5 2
 
   const attendances: { [key: number]: number }= {};
-
+  // Format attendance
   for (const [k, v] of formData.entries()) {
     if (k.startsWith("attendances-")) {
       const timeRangeId = Number(k.split("-")[1]);
@@ -37,14 +46,16 @@ export const createAttendancesAction = async ({ eventId, uuid }: { eventId: numb
     }
   }
 
-  // structure looks like this:
+  // Validation
+  // The structure of obj looks like this:
   // {
   //   attendeeName: "Attendee Name",
   //   attendances: { '3': 2, '4': 2, '5': 2 }
   // }
-  const req = { attendeeName: formData.get("attendeeName"), attendances };
-
-  const validatedFields = validateNewAttendancesReq(req);
+  const validatedFields = validateNewAttendancesReq({
+    attendeeName: formData.get("attendeeName"),
+    attendances,
+  });
   if (validatedFields.errors || !validatedFields.data) {
     return {
       data: undefined,
@@ -54,6 +65,7 @@ export const createAttendancesAction = async ({ eventId, uuid }: { eventId: numb
   }
 
   try {
+    // Make pair of timeRangeId and attendanceStatus
     const attendances: CreateNewAttendancesServiceDto["attendances"] = [];
     for (const[k, v] of Object.entries(validatedFields.data.attendances)) {
       attendances.push({ timeRangeId: Number(k), attendanceStatus: v })
@@ -64,9 +76,7 @@ export const createAttendancesAction = async ({ eventId, uuid }: { eventId: numb
       attendances,
     };
 
-    const res = await createNewAttendancesService(eventId, dto);
-
-    return { data: res };
+    await createNewAttendancesService(eventId, dto);
   } catch (error) {
     console.error(error);
     return {
@@ -75,4 +85,8 @@ export const createAttendancesAction = async ({ eventId, uuid }: { eventId: numb
       message: "Internal server error. Failed to register attendance",
     };
   }
+
+  const eventDetailPagePath = getWebRoute("eventDetail", { uuid });
+  revalidatePath(eventDetailPagePath);
+  redirect(eventDetailPagePath);
 };

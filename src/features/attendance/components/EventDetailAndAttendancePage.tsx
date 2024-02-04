@@ -49,10 +49,6 @@ export const EventDetailAndAttendancePage = ({ event }: Props) => {
       showErrorToast("Failed to register attendance. Please correct form errors")
       return;
     }
-    if (!res?.data) {
-      showErrorToast("Failed to register attendance");
-      return;
-    }
 
     setIsSubmitted(true);
   }, submitDebounceDuration);
