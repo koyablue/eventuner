@@ -5,20 +5,27 @@ https://eventuner.vercel.app
 
 Eventuner streamlines the event planning process, making it easier for both organizers and participants to manage their schedules and confirm attendance. No more back-and-forth emails or messages to find the best date!
 
-## :hammer: Built with :wrench:
+## Built with
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![React Server Components](https://img.shields.io/badge/React%20Server%20Components-gray?style=for-the-badge&logo=React)
+![React Server Actions](https://img.shields.io/badge/React%20Server%20Actions-gray?style=for-the-badge&logo=React)
+![Zod](https://img.shields.io/badge/Zod-3e67b1?style=for-the-badge&logo=Zod)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 
 ### Frontend
 - TypeScript
 - Next.js (ver.14)
-  - with App router, server components, server actions
+  - App router
+  - Server components
+  - Server actions
 - Tailwind CSS
 - shadcn/ui
+- Zod
 
 ### Backend
 - TypeScript
