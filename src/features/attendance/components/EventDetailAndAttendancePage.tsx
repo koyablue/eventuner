@@ -76,7 +76,7 @@ export const EventDetailAndAttendancePage = ({ event }: Props) => {
           </div>
 
           <div className="overflow-auto flex-1 md:w-1/2 md:pl-4 lg:pl-8 md:h-full">
-            <form action={callCreateAttendanceAction} className="h-full">
+            <form action={callCreateAttendanceAction} autoComplete="off" className="h-full">
               <AttendanceFormContents event={event} errors={formErrors} />
             </form>
           </div>
