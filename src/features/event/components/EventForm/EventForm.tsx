@@ -74,7 +74,7 @@ export const EventForm = ({
   } = useEventFormError();
 
   return (
-    <form action={submitAction} className="h-full">
+    <form action={submitAction} autoComplete="off" className="h-full">
       <div className="h-full w-full flex flex-col lg:flex-row">
         {/* title and description */}
         <div className="w-full flex flex-row grow lg:flex-col lg:h-full lg:w-3/12">
