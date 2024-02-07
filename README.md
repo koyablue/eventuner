@@ -9,6 +9,7 @@ Eventuner streamlines the event planning process, making it easier for both orga
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-1A3DC2?style=for-the-badge&logo=Zustand)
 ![React Server Components](https://img.shields.io/badge/React%20Server%20Components-gray?style=for-the-badge&logo=React)
 ![React Server Actions](https://img.shields.io/badge/React%20Server%20Actions-gray?style=for-the-badge&logo=React)
 ![Zod](https://img.shields.io/badge/Zod-3e67b1?style=for-the-badge&logo=Zod)
