@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { getWebRoute } from "@/lib/routes/web";
 
+// TODO: clean up unnecessary lines
+
 export default function Home() {
   return (
     <div className="h-screen min-h-screen overflow-auto bg-zinc-900">
