@@ -6,7 +6,9 @@ const appBaseUrl = getAppBaseUrl();
 // Routing
 const { getPath: getWebRoute, getFullPath: getWebRouteFull } =
   pathManager({
-      eventDetail: "/event/u/{uuid}",
-    }, appBaseUrl);
+    home: "/",
+    event: "/event",
+    eventDetail: "/event/u/{uuid}",
+  }, appBaseUrl);
 
 export { getWebRoute, getWebRouteFull };
