@@ -71,7 +71,7 @@ export const EventDetailAndAttendancePage = ({ event }: Props) => {
               </h1>
             </header>
             <div className="text-muted-foreground md:pr-8">
-              <p>{event.description}</p>
+              <p>{event.description || "No description for this event."}</p>
             </div>
           </div>
 
