@@ -3,7 +3,7 @@ type Props = {
 };
 
 /**
- *
+ * TODO: pass calendar errors, add line break, add width
  *
  * @param {Props} { daysCount }
  * @return { JSX.Element }

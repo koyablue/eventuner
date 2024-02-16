@@ -42,7 +42,7 @@ export default function Home() {
               Easy RSVPs
             </span>
           </h1>
-          <p className="text-center leading-relaxed inline-block px-4 mb-4 text-sm text-slate-300 sm:text-base sm:px-8 md:text-lg">
+          <p className="text-center leading-relaxed inline-block px-4 mb-6 text-sm text-slate-300 sm:text-base sm:px-8 md:text-lg">
             Eventuner streamlines the event planning process,&nbsp;
             <br className="block lg:hidden" />
             making it easier for both organizers and participants&nbsp;
@@ -51,8 +51,13 @@ export default function Home() {
             <br className="block" />
             No more back-and-forth emails or messages to find the best date!
           </p>
-          <Button className="bg-emerald-600 border border-emerald-500 hover:bg-emerald-700">
-            <Link href={getWebRoute("event")}>Schedule Event</Link>
+          <Button className="p-0 flex items-center justify-center bg-emerald-600 border border-emerald-500 hover:bg-emerald-700">
+            <Link
+              href={getWebRoute("event")}
+              className="flex items-center justify-center p-4 w-full h-full"
+            >
+              Schedule Event
+            </Link>
           </Button>
         </div>
       </main>

@@ -11,12 +11,15 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { SubmitButton } from "./SubmitButton";
 import { Calendar } from "@/features/event/components/Calendar/Calendar";
 import { FormError } from "@/components/form/FormError";
+import { StepLabel } from "@/features/event/components/EventForm/StepLabel";
+import { RequiredLabel } from "@/features/event/components/EventForm/RequiredLabel";
 import { ProposedSchedule } from "@/features/event/components/ProposedSchedule/ProposedSchedule";
 import { useEventFormError } from "@/features/event/hooks/useEventFormError";
 
 import { type EventDate } from "@/stores/eventDateStore";
 import { cn } from "@/lib/utils";
 import { useDetectScrollToBottom } from "@/hooks/useDetectScrollToBottom";
+
 
 type Props = {
   defaultEventName?: string
@@ -80,7 +83,8 @@ export const EventForm = ({
         <div className="w-full flex flex-row grow lg:flex-col lg:h-full lg:w-3/12">
           <div className="w-full flex flex-col gap-8 pt-16 md:px-4">
             <div>
-              <Label htmlFor="event_title_input">Event name</Label>
+              <StepLabel step={1} className="mb-1" />
+              <Label htmlFor="event_title_input">&nbsp;Event name<RequiredLabel /></Label>
               <Input
                 name="name"
                 defaultValue={defaultEventName}
@@ -112,7 +116,9 @@ export const EventForm = ({
 
         {/* Calendar */}
         <div className="pt-16 flex flex-col justify-center md:px-8 lg:w-5/12 lg:px-0 lg:pl-4 xl:px-4">
-          <Label htmlFor="event_date_picker" className="mb-2">Select date(s)</Label>
+          <Label htmlFor="event_date_picker" className="mb-2 mt-1">
+            <StepLabel step={2} />&nbsp;Select date(s)<RequiredLabel />
+          </Label>
           <Calendar
             id="event_date_picker"
             className="rounded-md w-full flex-1"
