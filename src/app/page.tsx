@@ -1,6 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { LinkButton } from "@/features/home/components/Button";
 import { getWebRoute } from "@/lib/routes/web";
 
 // TODO: clean up unnecessary lines
@@ -9,15 +8,17 @@ export default function Home() {
   return (
     <div className="h-screen min-h-screen overflow-auto bg-zinc-900">
       {/* <div className="fixed top-0 left-0 right-0 w-full max-w-full h-16 text-white bg-inherit border-b border-zinc-800 px-4 py-1 z-10"> */}
-      <div className="fixed top-0 left-0 right-0 w-full max-w-full h-16 text-white bg-inherit px-4 py-1 z-10">
-        {/* <div className="h-full w-16 relative flex justify-center items-center">
-          <Image
-            fill
-            src="/logo_transparent.png"
-            alt="Transparent logo image"
-            layout="fill"
-            objectFit="contain"
-          />
+      <div className="flex justify-between items-center fixed top-0 left-0 right-0 w-full max-w-full h-16 text-white bg-inherit px-4 py-1 z-10 md:px-32">
+        {/* <div></div>
+        <div>
+          <Button className="h-6 p-0 flex items-center justify-center bg-emerald-600 border border-emerald-500 hover:bg-emerald-700">
+            <Link
+              href={getWebRoute("event")}
+              className="flex items-center justify-center px-2 py-0 w-full h-full text-sm font-normal"
+            >
+              Sign in
+            </Link>
+          </Button>
         </div> */}
       </div>
       <main className="flex items-center justify-center pt-16 px-2 flex-1 overflow-auto sm:px-6 md:px-16">
@@ -51,14 +52,15 @@ export default function Home() {
             <br className="block" />
             No more back-and-forth emails or messages to find the best date!
           </p>
-          <Button className="p-0 flex items-center justify-center bg-emerald-600 border border-emerald-500 hover:bg-emerald-700">
-            <Link
-              href={getWebRoute("event")}
-              className="flex items-center justify-center p-4 w-full h-full"
-            >
-              Schedule Event
-            </Link>
-          </Button>
+
+          <div className="flex gap-2">
+            <LinkButton href={getWebRoute("event")} className="bg-emerald-600 border border-emerald-500 hover:bg-emerald-700">
+              Schedule event
+            </LinkButton>
+            <LinkButton href="#" className="bg-zinc-800 border border-zinc-600 hover:bg-zinc-700">
+              Sign in
+            </LinkButton>
+          </div>
         </div>
       </main>
     </div>
