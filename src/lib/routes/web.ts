@@ -9,6 +9,7 @@ const { getPath: getWebRoute, getFullPath: getWebRouteFull } =
     home: "/",
     event: "/event",
     eventDetail: "/event/u/{uuid}",
+    signIn: "/sign-in"
   }, appBaseUrl);
 
 export { getWebRoute, getWebRouteFull };

@@ -10,6 +10,8 @@ import {
   HelpCircle,
   CheckCircle2,
   XCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -25,4 +27,6 @@ export const Icons = {
   questionCircle: HelpCircle,
   checkCircle: CheckCircle2,
   xCircle: XCircle,
+  eye: Eye,
+  eyeOff: EyeOff,
 };
